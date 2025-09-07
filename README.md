@@ -103,6 +103,11 @@ matKhau VARCHAR(255)
 "password": "123456"
 }
 
+
+http://192.168.1.252:9000/login
+ipconfig getifaddr en0
+
+
 "{\"id\":\"VBHC-123\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":\"Phòng Đào tạo\",\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-01\",\"nguoiPhoBien\":\"Nguyễn Thị Bảy\",\"tepDinhKem\":\"quyetdinh-dt.pdf\",\"tenTaiKhoan\":\"nguyenvana\"}"
 add doc:
 curl -X 'POST' \
@@ -110,4 +115,4 @@ curl -X 'POST' \
 -H 'accept: */*' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@Cong-Van_247.pdf;type=application/pdf' \
--F 'docInfo={   "id": "VBHC-001",   "trichYeu": "Quy định về an toàn lao động",   "soHieu": "QĐ-2023/ATLD",   "loaiVanBan": "Quyết định",   "coQuanBanHanh": "Bộ Lao động",   "nguoiKy": "Nguyễn Văn A",   "chucVuNguoiKy": "Bộ trưởng",   "donViPhoBien": "Phòng Nhân sự",   "ngayDen": "2025-09-01",   "ngayBanHanh": "2025-08-25",   "nguoiPhoBien": "Trần Thị B",   "tepDinhKem": "quydinh-atld.pdf" };type=text/plain'
+-F 'docInfo={  "trichYeu": "Quy định về an toàn lao động",   "soHieu": "QĐ-2023/ATLD",   "loaiVanBan": "Quyết định",   "coQuanBanHanh": "Bộ Lao động",   "nguoiKy": "Nguyễn Văn A",   "chucVuNguoiKy": "Bộ trưởng",   "donViPhoBien": "Phòng Nhân sự",   "ngayDen": "2025-09-01",   "ngayBanHanh": "2025-08-25",   "nguoiPhoBien": "Trần Thị B",   "tepDinhKem": "quydinh-atld.pdf" };type=text/plain'

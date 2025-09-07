@@ -1,20 +1,18 @@
 package doc.management;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.List;
 
 @ApplicationScoped
 public class DocService {
@@ -26,7 +24,7 @@ public class DocService {
     private static final String IMAGE_DIRECTORY = "src/main/resources/images";  // Change this to your desired directory
 
     @Transactional
-    public void addSanPham(MultipartBodyImageUpload multipartBodyImageUpload) {
+    public void addDOc(MultipartBodyImageUpload multipartBodyImageUpload) {
         // Image upload logic (if applicable)
         VanBanHanhChinhDTO vbhc = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
         VanBanHanhChinh vbhcE = VanBanHanhChinhMapper.mapDtoToEntity(vbhc);
@@ -35,14 +33,58 @@ public class DocService {
             String imagePath = handleImageUpload(multipartBodyImageUpload.getFile(), vbhcE.getId(), vbhc.getTepDinhKem());  // Assuming handleImageUpload is a method that handles the file upload
             vbhcE.setTepDinhKem(imagePath);
             docRepo.save(vbhcE);
-            logger.info("new sp added successfully");
+            logger.info("new vbhc added successfully");
     }
 
+    public void update(MultipartBodyImageUpload multipartBodyImageUpload) {
+        VanBanHanhChinhDTO vanBanHanhChinhDTO = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
+        VanBanHanhChinh vanBanHanhChinh = VanBanHanhChinhMapper.mapDtoToEntity(vanBanHanhChinhDTO);
+
+        if (multipartBodyImageUpload.getFile() != null) {
+            String imagePath = handleImageUpload(multipartBodyImageUpload.getFile(), vanBanHanhChinh.getId(), vanBanHanhChinh.getTepDinhKem());
+            vanBanHanhChinh.setTepDinhKem(imagePath);
+        }
+
+        docRepo.updateVanBanHanhChinh(vanBanHanhChinh);
+    }
+
+    public static String extractFileNameBeforeDelimiter(String input) {
+        if (input == null) return null;
+        // Get the part before -----
+        String beforeDelimiter = input.split(FILE_NAME_CONCAT)[0];
+        // Get the file name (after last /)
+        int lastSlash = beforeDelimiter.lastIndexOf('/');
+        if (lastSlash >= 0 && lastSlash < beforeDelimiter.length() - 1) {
+            return beforeDelimiter.substring(lastSlash + 1);
+        }
+        return beforeDelimiter; // in case there's no slash
+    }
+    public List<VanBanHanhChinhDTO> getAll() {
+        // Image upload logic (if applicable)
+        List<VanBanHanhChinh> all = docRepo.getAll();
+        List<VanBanHanhChinhDTO> vanBanHanhChinhDTOS = all.stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
+        return vanBanHanhChinhDTOS;
+    }
+
+    public  VanBanHanhChinhDTO getById(String id){
+        return VanBanHanhChinhMapper.mapEntityToDto(docRepo.findById(id));
+    }
+
+    public  List<VanBanHanhChinhDTO> search(VanBanHanhChinhDTO vanBanHanhChinhDTO){
+        return docRepo.searchBy(vanBanHanhChinhDTO).stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
+    }
+
+    public void delete(String id) {
+        docRepo.deleteById(id);
+    }
+
+
+
     // Handle image upload and return the file path
-    private String handleImageUpload(InputStream file, String maSp, String fileName) {
+    private String handleImageUpload(InputStream file, String id, String fileName) {
         try {
             Path directoryPath = Paths.get(IMAGE_DIRECTORY);
-            String uniqueImageName = fileName + FILE_NAME_CONCAT + maSp +".pdf";
+            String uniqueImageName = fileName + FILE_NAME_CONCAT + id +".pdf";
             Path filePath = directoryPath.resolve(uniqueImageName);
             Files.copy(file, filePath);
 
