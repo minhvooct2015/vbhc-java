@@ -65,6 +65,8 @@ docker pull mysql:8.0
 docker run --name doc-database -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:8.0
 
 
+docker run --name doc-database-v2 -e MYSQL_ROOT_PASSWORD=123456 -p 3308:3306 -d mysql:8.0
+
 docker exec -it doc-database mysql -u root -p
 CREATE DATABASE docdb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE docdb;

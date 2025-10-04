@@ -1,5 +1,6 @@
 package doc.management;
 
+import doc.management.v2.VanBanHanhChinhRepo;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -26,6 +27,7 @@ public class DocResource {
         docService.addDOc(multipartBodyImageUpload);
         return Response.status(Response.Status.CREATED).build();
     }
+
 
     @PUT
     @Path("update/{id}")
