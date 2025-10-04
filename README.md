@@ -118,3 +118,22 @@ curl -X 'POST' \
 -H 'Content-Type: multipart/form-data' \
 -F 'file=@Cong-Van_247.pdf;type=application/pdf' \
 -F 'docInfo={  "trichYeu": "Quy định về an toàn lao động",   "soHieu": "QĐ-2023/ATLD",   "loaiVanBan": "Quyết định",   "coQuanBanHanh": "Bộ Lao động",   "nguoiKy": "Nguyễn Văn A",   "chucVuNguoiKy": "Bộ trưởng",   "donViPhoBien": "Phòng Nhân sự",   "ngayDen": "2025-09-01",   "ngayBanHanh": "2025-08-25",   "nguoiPhoBien": "Trần Thị B",   "tepDinhKem": "quydinh-atld.pdf" };type=text/plain'
+
+
+
+
+{
+"id": "string",
+"trichYeu": "string",
+"soHieu": "string",
+"loaiVanBan": "string",
+"coQuanBanHanh": "string",
+"nguoiKy": "string",
+"chucVuNguoiKy": "string",
+"donViPhoBien": "string",
+"ngayDen": "2022-03-10",
+"ngayBanHanh": "2022-03-10",
+"nguoiPhoBien": "string",
+"tepDinhKem": "string",
+"tenTaiKhoan": "string"
+}
