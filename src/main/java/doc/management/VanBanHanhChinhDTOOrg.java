@@ -2,9 +2,7 @@ package doc.management;
 
 import java.time.LocalDate;
 
-import java.time.LocalDate;
-
-public class VanBanHanhChinhDTO {
+public class VanBanHanhChinhDTOOrg {
     private String id;
     private String trichYeu;
     private String soHieu;

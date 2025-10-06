@@ -19,16 +19,36 @@ public class EntityDtoMapper {
         return new LoaiVanBan(dto.getLoaiVanBanId(), dto.getTenLoai());
     }
 
-    // ---- CoQuanDonVi ----
+    // --- TinhThanhPho ---
+    public static TinhThanhPhoDTO toTinhThanhPhoDTO(TinhThanhPho entity) {
+        if (entity == null) return null;
+        return new TinhThanhPhoDTO(entity.getTinhThanhPhoId(), entity.getTenTinhThanhPho());
+    }
+
+    public static TinhThanhPho toTinhThanhPhoEntity(TinhThanhPhoDTO dto) {
+        if (dto == null) return null;
+        return new TinhThanhPho(dto.getTinhThanhPhoId(), dto.getTenTinhThanhPho());
+    }
+
+    // --- Update CoQuanDonVi mapping to include TinhThanhPho ---
     public static CoQuanDonViDTO toCoQuanDonViDTO(CoQuanDonVi entity) {
         if (entity == null) return null;
-        return new CoQuanDonViDTO(entity.getCoQuanDonViId(), entity.getTenCoQuanDonVi());
+        return new CoQuanDonViDTO(
+                entity.getCoQuanDonViId(),
+                entity.getTenCoQuanDonVi(),
+                toTinhThanhPhoDTO(entity.getTinhThanhPho())
+        );
     }
 
     public static CoQuanDonVi toCoQuanDonViEntity(CoQuanDonViDTO dto) {
         if (dto == null) return null;
-        return new CoQuanDonVi(dto.getCoQuanDonViId(), dto.getTenCoQuanDonVi());
+        return new CoQuanDonVi(
+                dto.getCoQuanDonViId(),
+                dto.getTenCoQuanDonVi(),
+                toTinhThanhPhoEntity(dto.getTinhThanhPho())
+        );
     }
+
 
     // ---- ChucVu ----
     public static ChucVuDTO toChucVuDTO(ChucVu entity) {

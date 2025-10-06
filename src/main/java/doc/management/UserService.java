@@ -1,9 +1,10 @@
 package doc.management;
+import doc.management.v2.DTO.NguoiDungDTO;
+import doc.management.v2.NguoiDung;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.BadRequestException;
 import org.mindrot.jbcrypt.BCrypt;
-import doc.management.NguoiDungDTO;
 
 import java.util.UUID;
 

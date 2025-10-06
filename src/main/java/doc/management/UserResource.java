@@ -1,5 +1,7 @@
 package doc.management;
 
+import doc.management.v2.DTO.NguoiDungDTO;
+import doc.management.v2.NguoiDung;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -42,7 +44,7 @@ public class UserResource {
         if (nguoiDung != null) {
             // Build DTO to return (without password)
             NguoiDungDTO dto = new NguoiDungDTO();
-            dto.setFromEntity(nguoiDung);
+//            dto.setFromEntity(nguoiDung);
             return Response.ok(dto).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED)

@@ -5,20 +5,26 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
 
+import jakarta.persistence.*;
+
 @Entity
 public class CoQuanDonVi {
     @Id
-    @Column(length = 36)
     private String coQuanDonViId;
 
     @Column(nullable = false)
     private String tenCoQuanDonVi;
 
+    @ManyToOne
+    @JoinColumn(name = "tinhThanhPhoId")
+    private TinhThanhPho tinhThanhPho;
+
     public CoQuanDonVi() {}
 
-    public CoQuanDonVi(String coQuanDonViId, String tenCoQuanDonVi) {
+    public CoQuanDonVi(String coQuanDonViId, String tenCoQuanDonVi, TinhThanhPho tinhThanhPho) {
         this.coQuanDonViId = coQuanDonViId;
         this.tenCoQuanDonVi = tenCoQuanDonVi;
+        this.tinhThanhPho = tinhThanhPho;
     }
 
     public String getCoQuanDonViId() {
@@ -35,5 +41,13 @@ public class CoQuanDonVi {
 
     public void setTenCoQuanDonVi(String tenCoQuanDonVi) {
         this.tenCoQuanDonVi = tenCoQuanDonVi;
+    }
+
+    public TinhThanhPho getTinhThanhPho() {
+        return tinhThanhPho;
+    }
+
+    public void setTinhThanhPho(TinhThanhPho tinhThanhPho) {
+        this.tinhThanhPho = tinhThanhPho;
     }
 }

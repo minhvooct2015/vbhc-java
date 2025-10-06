@@ -1,5 +1,6 @@
 package doc.management;
 
+import doc.management.v2.NguoiDung;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

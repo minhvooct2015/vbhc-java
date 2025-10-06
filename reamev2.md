@@ -63,3 +63,80 @@ CONSTRAINT FK_VBHC_DonViPhoBien FOREIGN KEY (donViPhoBienId) REFERENCES CoQuanDo
 CONSTRAINT FK_VBHC_NguoiKy FOREIGN KEY (nguoiKyId) REFERENCES NguoiKy(nguoiKyId),
 CONSTRAINT FK_VBHC_NguoiDung FOREIGN KEY (userId) REFERENCES NguoiDung(userId)
 );
+
+CREATE TABLE TinhThanhPho (
+tinhThanhPhoId VARCHAR(100) PRIMARY KEY,
+tenTinhThanhPho NVARCHAR(255) NOT NULL
+);
+
+ALTER TABLE CoQuanDonVi
+ADD tinhThanhPhoId VARCHAR(100),
+ADD CONSTRAINT FK_CoQuanDonVi_TinhThanhPho FOREIGN KEY (tinhThanhPhoId) REFERENCES 
+TinhThanhPho(tinhThanhPhoId);
+
+
+
+INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
+(UUID(), N'An Giang'),
+(UUID(), N'Bà Rịa - Vũng Tàu'),
+(UUID(), N'Bắc Giang'),
+(UUID(), N'Bắc Kạn'),
+(UUID(), N'Bạc Liêu'),
+(UUID(), N'Bắc Ninh'),
+(UUID(), N'Bến Tre'),
+(UUID(), N'Bình Định'),
+(UUID(), N'Bình Dương'),
+(UUID(), N'Bình Phước'),
+(UUID(), N'Bình Thuận'),
+(UUID(), N'Cà Mau'),
+(UUID(), N'Cần Thơ'),
+(UUID(), N'Cao Bằng'),
+(UUID(), N'Đà Nẵng'),
+(UUID(), N'Đắk Lắk'),
+(UUID(), N'Đắk Nông'),
+(UUID(), N'Điện Biên'),
+(UUID(), N'Đồng Nai'),
+(UUID(), N'Đồng Tháp'),
+(UUID(), N'Gia Lai'),
+(UUID(), N'Hà Giang'),
+(UUID(), N'Hà Nam'),
+(UUID(), N'Hà Nội'),
+(UUID(), N'Hà Tĩnh'),
+(UUID(), N'Hải Dương'),
+(UUID(), N'Hải Phòng'),
+(UUID(), N'Hậu Giang'),
+(UUID(), N'Hòa Bình'),
+(UUID(), N'Hưng Yên'),
+(UUID(), N'Khánh Hòa'),
+(UUID(), N'Kiên Giang'),
+(UUID(), N'Kon Tum'),
+(UUID(), N'Lai Châu'),
+(UUID(), N'Lâm Đồng'),
+(UUID(), N'Lạng Sơn'),
+(UUID(), N'Lào Cai'),
+(UUID(), N'Long An'),
+(UUID(), N'Nam Định'),
+(UUID(), N'Nghệ An'),
+(UUID(), N'Ninh Bình'),
+(UUID(), N'Ninh Thuận'),
+(UUID(), N'Phú Thọ'),
+(UUID(), N'Phú Yên'),
+(UUID(), N'Quảng Bình'),
+(UUID(), N'Quảng Nam'),
+(UUID(), N'Quảng Ngãi'),
+(UUID(), N'Quảng Ninh'),
+(UUID(), N'Quảng Trị'),
+(UUID(), N'Sóc Trăng'),
+(UUID(), N'Sơn La'),
+(UUID(), N'Tây Ninh'),
+(UUID(), N'Thái Bình'),
+(UUID(), N'Thái Nguyên'),
+(UUID(), N'Thanh Hóa'),
+(UUID(), N'Thừa Thiên Huế'),
+(UUID(), N'Tiền Giang'),
+(UUID(), N'Tp. Hồ Chí Minh'),
+(UUID(), N'Trà Vinh'),
+(UUID(), N'Tuyên Quang'),
+(UUID(), N'Vĩnh Long'),
+(UUID(), N'Vĩnh Phúc'),
+(UUID(), N'Yên Bái');

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class VanBanHanhChinhMapper {
-    public static VanBanHanhChinh mapDtoToEntity(VanBanHanhChinhDTO dto) {
+    public static VanBanHanhChinh mapDtoToEntity(VanBanHanhChinhDTOOrg dto) {
         if (dto == null) return null;
 
         VanBanHanhChinh entity = new VanBanHanhChinh();
@@ -42,18 +42,18 @@ public class VanBanHanhChinhMapper {
      * @return VanBanHanhChinhDTO object
      * @throws Exception if parsing fails
      */
-    public static VanBanHanhChinhDTO fromString(String json){
+    public static VanBanHanhChinhDTOOrg fromString(String json){
         try {
-            return objectMapper.readValue(json, VanBanHanhChinhDTO.class);
+            return objectMapper.readValue(json, VanBanHanhChinhDTOOrg.class);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static VanBanHanhChinhDTO mapEntityToDto(VanBanHanhChinh entity) {
+    public static VanBanHanhChinhDTOOrg mapEntityToDto(VanBanHanhChinh entity) {
         if (entity == null) return null;
 
-        VanBanHanhChinhDTO dto = new VanBanHanhChinhDTO();
+        VanBanHanhChinhDTOOrg dto = new VanBanHanhChinhDTOOrg();
         dto.setId(entity.getId());
         dto.setTrichYeu(entity.getTrichYeu());
         dto.setSoHieu(entity.getSoHieu());

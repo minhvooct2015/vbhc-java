@@ -8,10 +8,10 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name = "VanBanHanhChinh")
+//@Entity
+//@Table(name = "VanBanHanhChinh")
 public class VanBanHanhChinh {
-    @Id
+//    @Id
     private String id;
 
     private String trichYeu;

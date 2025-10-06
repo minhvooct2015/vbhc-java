@@ -53,7 +53,7 @@ public class DocRepo {
         }
     }
 
-    public List<VanBanHanhChinh> searchBy(VanBanHanhChinhDTO dto) {
+    public List<VanBanHanhChinh> searchBy(VanBanHanhChinhDTOOrg dto) {
         StringBuilder jpql = new StringBuilder("SELECT v FROM VanBanHanhChinh v WHERE 1=1");
 //        if (dto.getId() != null) jpql.append(" AND v.id = :id");
         if (dto.getTrichYeu() != null) jpql.append(" AND v.trichYeu = :trichYeu");

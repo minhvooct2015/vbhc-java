@@ -26,7 +26,7 @@ public class DocService {
     @Transactional
     public void addDOc(MultipartBodyImageUpload multipartBodyImageUpload) {
         // Image upload logic (if applicable)
-        VanBanHanhChinhDTO vbhc = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
+        VanBanHanhChinhDTOOrg vbhc = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
         VanBanHanhChinh vbhcE = VanBanHanhChinhMapper.mapDtoToEntity(vbhc);
             vbhcE.setId("VB" + String.format("%03d", (int) (Math.random() * 1000)));
             vbhcE.setNgayDen(LocalDate.now());
@@ -37,8 +37,8 @@ public class DocService {
     }
 
     public void update(MultipartBodyImageUpload multipartBodyImageUpload) {
-        VanBanHanhChinhDTO vanBanHanhChinhDTO = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
-        VanBanHanhChinh vanBanHanhChinh = VanBanHanhChinhMapper.mapDtoToEntity(vanBanHanhChinhDTO);
+        VanBanHanhChinhDTOOrg vanBanHanhChinhDTOOrg = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
+        VanBanHanhChinh vanBanHanhChinh = VanBanHanhChinhMapper.mapDtoToEntity(vanBanHanhChinhDTOOrg);
 
         if (multipartBodyImageUpload.getFile() != null) {
             String imagePath = handleImageUpload(multipartBodyImageUpload.getFile(), vanBanHanhChinh.getId(), vanBanHanhChinh.getTepDinhKem());
@@ -59,19 +59,19 @@ public class DocService {
         }
         return beforeDelimiter; // in case there's no slash
     }
-    public List<VanBanHanhChinhDTO> getAll() {
+    public List<VanBanHanhChinhDTOOrg> getAll() {
         // Image upload logic (if applicable)
         List<VanBanHanhChinh> all = docRepo.getAll();
-        List<VanBanHanhChinhDTO> vanBanHanhChinhDTOS = all.stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
-        return vanBanHanhChinhDTOS;
+        List<VanBanHanhChinhDTOOrg> vanBanHanhChinhDTOOrgs = all.stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
+        return vanBanHanhChinhDTOOrgs;
     }
 
-    public  VanBanHanhChinhDTO getById(String id){
+    public VanBanHanhChinhDTOOrg getById(String id){
         return VanBanHanhChinhMapper.mapEntityToDto(docRepo.findById(id));
     }
 
-    public  List<VanBanHanhChinhDTO> search(VanBanHanhChinhDTO vanBanHanhChinhDTO){
-        return docRepo.searchBy(vanBanHanhChinhDTO).stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
+    public  List<VanBanHanhChinhDTOOrg> search(VanBanHanhChinhDTOOrg vanBanHanhChinhDTOOrg){
+        return docRepo.searchBy(vanBanHanhChinhDTOOrg).stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
     }
 
     public void delete(String id) {

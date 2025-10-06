@@ -1,6 +1,5 @@
 package doc.management;
 
-import doc.management.v2.VanBanHanhChinhRepo;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
@@ -53,20 +52,20 @@ public class DocResource {
 
     @GET
     @Path("get/all")
-    public List<VanBanHanhChinhDTO> getAllSanPham() {
+    public List<VanBanHanhChinhDTOOrg> getAllSanPham() {
         return docService.getAll();
     }
 
     @GET
     @Path("get/{id}")
-    public VanBanHanhChinhDTO getSanPhamById(@PathParam("id") String id) {
+    public VanBanHanhChinhDTOOrg getSanPhamById(@PathParam("id") String id) {
         return docService.getById(id);
     }
 
     @POST
     @Path("/seach")
-    public List<VanBanHanhChinhDTO> getSanPhamById(VanBanHanhChinhDTO vanBanHanhChinhDto) {
-        return docService.search(vanBanHanhChinhDto);
+    public List<VanBanHanhChinhDTOOrg> getSanPhamById(VanBanHanhChinhDTOOrg vanBanHanhChinhDtoOrg) {
+        return docService.search(vanBanHanhChinhDtoOrg);
     }
 
 

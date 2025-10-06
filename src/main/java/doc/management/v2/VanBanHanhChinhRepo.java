@@ -61,8 +61,18 @@ public class VanBanHanhChinhRepo {
         return em.find(LoaiVanBan.class, id);
     }
 
+    public List<LoaiVanBan> findLoaiVanBanByTen(String tenLoai) {
+        return em.createQuery(
+                        "SELECT l FROM LoaiVanBan l WHERE l.tenLoai LIKE :tenLoai", LoaiVanBan.class)
+                .setParameter("tenLoai", "%" + tenLoai + "%")
+                .getResultList();
+    }
     public List<LoaiVanBan> listLoaiVanBan() {
         return em.createQuery("SELECT l FROM LoaiVanBan l", LoaiVanBan.class).getResultList();
+    }
+
+    public List<TinhThanhPho> listTinhThanhPho() {
+        return em.createQuery("SELECT l FROM TinhThanhPho l", TinhThanhPho.class).getResultList();
     }
 
     // ----------- CoQuanDonVi -----------
