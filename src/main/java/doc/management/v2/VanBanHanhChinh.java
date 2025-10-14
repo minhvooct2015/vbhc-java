@@ -32,9 +32,13 @@ public class VanBanHanhChinh {
     @JoinColumn(name = "donViPhoBienId", nullable = false)
     private CoQuanDonVi donViPhoBien;
 
+    // Add mapping to NguoiKyGiuChucVu (composite key)
     @ManyToOne
-    @JoinColumn(name = "nguoiKyId", nullable = false)
-    private NguoiKy nguoiKy;
+    @JoinColumns({
+            @JoinColumn(name = "nguoiKyId", referencedColumnName = "nguoiKyId"),
+            @JoinColumn(name = "chucVuId", referencedColumnName = "chucVuId")
+    })
+    private NguoiKyGiuChucVu nguoiKyGiuChucVu;
 
     @ManyToOne
     @JoinColumn(name = "userId", nullable = false)
@@ -44,7 +48,7 @@ public class VanBanHanhChinh {
 
     public VanBanHanhChinh(String id, String trichYeu, String soHieu, LocalDate ngayDen, LocalDate ngayBanHanh,
                            String tepDinhKem, LoaiVanBan loaiVanBan, CoQuanDonVi coQuanBanHanh, CoQuanDonVi donViPhoBien,
-                           NguoiKy nguoiKy, NguoiDung nguoiNhap) {
+                           NguoiKyGiuChucVu nguoiKyGiuChucVu, NguoiDung nguoiNhap) {
         this.id = id;
         this.trichYeu = trichYeu;
         this.soHieu = soHieu;
@@ -54,7 +58,7 @@ public class VanBanHanhChinh {
         this.loaiVanBan = loaiVanBan;
         this.coQuanBanHanh = coQuanBanHanh;
         this.donViPhoBien = donViPhoBien;
-        this.nguoiKy = nguoiKy;
+        this.nguoiKyGiuChucVu = nguoiKyGiuChucVu;
         this.nguoiNhap = nguoiNhap;
     }
 
@@ -130,12 +134,12 @@ public class VanBanHanhChinh {
         this.donViPhoBien = donViPhoBien;
     }
 
-    public NguoiKy getNguoiKy() {
-        return nguoiKy;
+    public NguoiKyGiuChucVu getNguoiKyGiuChucVu() {
+        return nguoiKyGiuChucVu;
     }
 
-    public void setNguoiKy(NguoiKy nguoiKy) {
-        this.nguoiKy = nguoiKy;
+    public void setNguoiKyGiuChucVu(NguoiKyGiuChucVu nguoiKy) {
+        this.nguoiKyGiuChucVu = nguoiKy;
     }
 
     public NguoiDung getNguoiNhap() {

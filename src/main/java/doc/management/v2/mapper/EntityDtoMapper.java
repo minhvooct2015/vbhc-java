@@ -93,6 +93,17 @@ public class EntityDtoMapper {
         );
     }
 
+    public static NguoiDungDTO toNguoiDungDTOShort(NguoiDung entity) {
+        if (entity == null) return null;
+        return new NguoiDungDTO(
+                entity.getUserId(),
+                entity.getHoTen(),
+                entity.getEmail(),
+                entity.getSoDienThoai(),
+                entity.getTenDangNhap()
+        );
+    }
+
     public static NguoiDung toNguoiDungEntity(NguoiDungDTO dto) {
         if (dto == null) return null;
         return new NguoiDung(
@@ -127,38 +138,84 @@ public class EntityDtoMapper {
     // ---- VanBanHanhChinh ----
     public static VanBanHanhChinhDTO toVanBanHanhChinhDTO(VanBanHanhChinh entity) {
         if (entity == null) return null;
-        return new VanBanHanhChinhDTO(
-                entity.getId(),
-                entity.getTrichYeu(),
-                entity.getSoHieu(),
-                entity.getNgayDen(),
-                entity.getNgayBanHanh(),
-                entity.getTepDinhKem(),
-                toLoaiVanBanDTO(entity.getLoaiVanBan()),
-                toCoQuanDonViDTO(entity.getCoQuanBanHanh()),
-                toCoQuanDonViDTO(entity.getDonViPhoBien()),
-                toNguoiKyDTO(entity.getNguoiKy()),
-                toNguoiDungDTO(entity.getNguoiNhap())
-        );
+       return null;
+//        return new VanBanHanhChinhDTO(
+//                entity.getId(),
+//                entity.getTrichYeu(),
+//                entity.getSoHieu(),
+//                entity.getNgayDen(),
+//                entity.getNgayBanHanh(),
+//                entity.getTepDinhKem(),
+//                toLoaiVanBanDTO(entity.getLoaiVanBan()),
+//                toCoQuanDonViDTO(entity.getCoQuanBanHanh()),
+//                toCoQuanDonViDTO(entity.getDonViPhoBien()),
+//                toNguoiKyDTO(entity.getNguoiKyGiuChucVu()),
+//                toNguoiDungDTO(entity.getNguoiNhap())
+//        );
     }
 
-    public static VanBanHanhChinh toVanBanHanhChinhEntity(VanBanHanhChinhDTO dto) {
-        if (dto == null) return null;
-        return new VanBanHanhChinh(
-                dto.getId(),
-                dto.getTrichYeu(),
-                dto.getSoHieu(),
-                dto.getNgayDen(),
-                dto.getNgayBanHanh(),
-                dto.getTepDinhKem(),
-                toLoaiVanBanEntity(dto.getLoaiVanBan()),
-                toCoQuanDonViEntity(dto.getCoQuanBanHanh()),
-                toCoQuanDonViEntity(dto.getDonViPhoBien()),
-                toNguoiKyEntity(dto.getNguoiKy()),
-                toNguoiDungEntity(dto.getNguoiNhap())
-        );
+    public static VanBanHanhChinhDTOV2 toVanBanHanhChinhDTOV2(VanBanHanhChinh entity) {
+        if (entity == null) return null;
+        VanBanHanhChinhDTOV2 dto = new VanBanHanhChinhDTOV2();
+
+
+        NguoiKyGiuChucVu nguoiKyGiuChucVu = entity.getNguoiKyGiuChucVu();
+        String tenChucVu = nguoiKyGiuChucVu.getChucVu().getTenChucVu();
+        String hoTenNguoiKy = nguoiKyGiuChucVu.getNguoiKy().getHoTenNguoiKy();
+        CoQuanDonVi coQuanBanHanh = entity.getCoQuanBanHanh();
+
+        dto.setId(entity.getId());
+        dto.setTrichYeu(entity.getTrichYeu());
+        dto.setSoHieu(entity.getSoHieu());
+        dto.setLoaiVanBan(entity.getLoaiVanBan().getTenLoai());
+        dto.setChucVuNguoiKy(tenChucVu);
+        dto.setCoQuanBanHanh(coQuanBanHanh.getTenCoQuanDonVi());
+        dto.setNguoiKy(hoTenNguoiKy);
+        dto.setDonViPhoBien(entity.getDonViPhoBien().getTenCoQuanDonVi());
+        dto.setNgayDen(entity.getNgayDen());
+        dto.setNgayBanHanh(entity.getNgayBanHanh());
+        NguoiDung nguoiNhap = entity.getNguoiNhap();
+        dto.setNguoiPhoBien(nguoiNhap.getHoTen());
+        dto.setTenTaiKhoan(nguoiNhap.getTenDangNhap());
+        dto.setTepDinhKem(entity.getTepDinhKem());
+
+        return dto;
     }
 
+//    public static VanBanHanhChinh toVanBanHanhChinhEntity(VanBanHanhChinhDTO dto) {
+//        if (dto == null) return null;
+//        return new VanBanHanhChinh(
+//                dto.getId(),
+//                dto.getTrichYeu(),
+//                dto.getSoHieu(),
+//                dto.getNgayDen(),
+//                dto.getNgayBanHanh(),
+//                dto.getTepDinhKem(),
+//                toLoaiVanBanEntity(dto.getLoaiVanBan()),
+//                toCoQuanDonViEntity(dto.getCoQuanBanHanh()),
+//                toCoQuanDonViEntity(dto.getDonViPhoBien()),
+//                toNguoiKyEntity(dto.getNguoiKy()),
+//                toNguoiDungEntity(dto.getNguoiNhap())
+//        );
+//    }
+
+    public static VanBanHanhChinh toVanBanHanhChinhEntityShort(VanBanHanhChinhDTOV2 dto) {
+        VanBanHanhChinh vanBanHanhChinh = new VanBanHanhChinh();
+
+        vanBanHanhChinh.setId(dto.getId());
+        vanBanHanhChinh.setTrichYeu(dto.getTrichYeu());
+        vanBanHanhChinh.setSoHieu(dto.getSoHieu());
+        vanBanHanhChinh.setNgayDen(dto.getNgayDen());
+        vanBanHanhChinh.setNgayBanHanh(dto.getNgayBanHanh());
+        vanBanHanhChinh.setTepDinhKem(dto.getTepDinhKem());
+        return vanBanHanhChinh;
+    }
+
+//    toLoaiVanBanEntity(dto.getLoaiVanBan()),
+//    toCoQuanDonViEntity(dto.getCoQuanBanHanh()),
+//    toCoQuanDonViEntity(dto.getDonViPhoBien()),
+//    toNguoiKyEntity(dto.getNguoiKy()),
+//    toNguoiDungEntity(dto.getNguoiNhap())
     // ---- Utility (Optional) ----
     public static List<VanBanHanhChinhDTO> toVanBanHanhChinhDTOList(List<VanBanHanhChinh> list) {
         if (list == null) return null;
@@ -167,6 +224,7 @@ public class EntityDtoMapper {
 
     public static List<VanBanHanhChinh> toVanBanHanhChinhEntityList(List<VanBanHanhChinhDTO> list) {
         if (list == null) return null;
-        return list.stream().map(EntityDtoMapper::toVanBanHanhChinhEntity).collect(Collectors.toList());
+//        return list.stream().map(EntityDtoMapper::toVanBanHanhChinhEntity).collect(Collectors.toList());
+        return null;
     }
 }

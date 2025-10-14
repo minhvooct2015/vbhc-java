@@ -4,6 +4,9 @@ package doc.management.v2;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class ChucVu {
@@ -13,6 +16,9 @@ public class ChucVu {
 
     @Column(nullable = false)
     private String tenChucVu;
+
+    @OneToMany(mappedBy = "chucVu")
+    private List<NguoiKyGiuChucVu> nguoiKyGiuChucVu;
 
     public ChucVu() {}
 
@@ -35,5 +41,13 @@ public class ChucVu {
 
     public void setTenChucVu(String tenChucVu) {
         this.tenChucVu = tenChucVu;
+    }
+
+    public List<NguoiKyGiuChucVu> getNguoiKyGiuChucVu() {
+        return nguoiKyGiuChucVu;
+    }
+
+    public void setNguoiKyGiuChucVu(List<NguoiKyGiuChucVu> nguoiKyGiuChucVu) {
+        this.nguoiKyGiuChucVu = nguoiKyGiuChucVu;
     }
 }

@@ -60,7 +60,8 @@ userId INT NOT NULL,
 CONSTRAINT FK_VBHC_LoaiVanBan FOREIGN KEY (loaiVanBanId) REFERENCES LoaiVanBan(loaiVanBanId),
 CONSTRAINT FK_VBHC_CoQuanBanHanh FOREIGN KEY (coQuanBanHanhId) REFERENCES CoQuanDonVi(coQuanDonViId),
 CONSTRAINT FK_VBHC_DonViPhoBien FOREIGN KEY (donViPhoBienId) REFERENCES CoQuanDonVi(coQuanDonViId),
-CONSTRAINT FK_VBHC_NguoiKy FOREIGN KEY (nguoiKyId) REFERENCES NguoiKy(nguoiKyId),
+
+[//]: # (CONSTRAINT FK_VBHC_NguoiKy FOREIGN KEY &#40;nguoiKyId&#41; REFERENCES NguoiKy&#40;nguoiKyId&#41;,)
 CONSTRAINT FK_VBHC_NguoiDung FOREIGN KEY (userId) REFERENCES NguoiDung(userId)
 );
 
@@ -74,6 +75,12 @@ ADD tinhThanhPhoId VARCHAR(100),
 ADD CONSTRAINT FK_CoQuanDonVi_TinhThanhPho FOREIGN KEY (tinhThanhPhoId) REFERENCES 
 TinhThanhPho(tinhThanhPhoId);
 
+
+ALTER TABLE VanBanHanhChinh
+ADD chucVuId VARCHAR(100),
+ADD CONSTRAINT FK_VanBanHanhChinh_NguoiKyGiuChucVu
+FOREIGN KEY (nguoiKyId, chucVuId)
+REFERENCES NguoiKyGiuChucVu(nguoiKyId, chucVuId);
 
 
 INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
@@ -140,3 +147,7 @@ INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
 (UUID(), N'Vĩnh Long'),
 (UUID(), N'Vĩnh Phúc'),
 (UUID(), N'Yên Bái');
+
+
+update:
+"{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":\"Phòng Đào tạo\",\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-01\",\"nguoiPhoBien\":\"string\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"tenTaiKhoan\":\"admin\"}"

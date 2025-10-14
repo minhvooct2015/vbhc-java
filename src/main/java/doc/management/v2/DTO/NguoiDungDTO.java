@@ -19,6 +19,14 @@ public class NguoiDungDTO {
         this.matKhau = matKhau;
     }
 
+    public NguoiDungDTO(String userId, String hoTen, String email, String soDienThoai, String tenDangNhap) {
+        this.userId = userId;
+        this.hoTen = hoTen;
+        this.email = email;
+        this.soDienThoai = soDienThoai;
+        this.tenDangNhap = tenDangNhap;
+    }
+
     public String getUserId() {
         return userId;
     }

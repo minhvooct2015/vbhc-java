@@ -2,6 +2,7 @@ package doc.management.v2.control;
 
 import doc.management.v2.*;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import java.util.Arrays;
@@ -11,6 +12,9 @@ import java.util.List;
 public class TinhThanhPhoService {
 
     // List of all 63 province/city names (should be UPPERCASE to match input)
+
+    @Inject
+    EntityManager entityManager;
 
 
     public String checkCity(String cityName) {
@@ -40,7 +44,7 @@ public class TinhThanhPhoService {
      * Finds and returns the TinhThanhPho entity whose name matches (is contained in) the given input string.
      * Returns null if not found.
      */
-    public static TinhThanhPho findMatchingProvince(EntityManager entityManager, String input) {
+    public TinhThanhPho findMatchingProvince(String input) {
         // Get all provinces from the database
         List<TinhThanhPho> provinces  = entityManager.createQuery(
                 "SELECT t FROM TinhThanhPho t", TinhThanhPho.class).getResultList();

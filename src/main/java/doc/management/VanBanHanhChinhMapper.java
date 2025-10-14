@@ -42,6 +42,21 @@ public class VanBanHanhChinhMapper {
      * @return VanBanHanhChinhDTO object
      * @throws Exception if parsing fails
      */
+    public static <T> T fromString(String json, Class<T> classType){
+        try {
+            return objectMapper.readValue(json, classType);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Map a JSON string to VanBanHanhChinhDTO.
+     *
+     * @param json The JSON string representing VanBanHanhChinhDTO
+     * @return VanBanHanhChinhDTO object
+     * @throws Exception if parsing fails
+     */
     public static VanBanHanhChinhDTOOrg fromString(String json){
         try {
             return objectMapper.readValue(json, VanBanHanhChinhDTOOrg.class);

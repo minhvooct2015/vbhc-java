@@ -26,7 +26,7 @@ public class DocService {
     @Transactional
     public void addDOc(MultipartBodyImageUpload multipartBodyImageUpload) {
         // Image upload logic (if applicable)
-        VanBanHanhChinhDTOOrg vbhc = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo());
+        VanBanHanhChinhDTOOrg vbhc = VanBanHanhChinhMapper.fromString(multipartBodyImageUpload.getDocInfo(), VanBanHanhChinhDTOOrg.class);
         VanBanHanhChinh vbhcE = VanBanHanhChinhMapper.mapDtoToEntity(vbhc);
             vbhcE.setId("VB" + String.format("%03d", (int) (Math.random() * 1000)));
             vbhcE.setNgayDen(LocalDate.now());

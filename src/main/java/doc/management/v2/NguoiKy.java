@@ -3,6 +3,8 @@ package doc.management.v2;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class NguoiKy {
     @Id
@@ -16,7 +18,19 @@ public class NguoiKy {
     @JoinColumn(name = "coQuanDonViId", nullable = false)
     private CoQuanDonVi coQuanDonVi;
 
+    @OneToMany(mappedBy = "nguoiKy")
+    private List<NguoiKyGiuChucVu> nguoiKyGiuChucVu;
+
     public NguoiKy() {}
+
+
+    public List<NguoiKyGiuChucVu> getNguoiKyGiuChucVu() {
+        return nguoiKyGiuChucVu;
+    }
+
+    public void setNguoiKyGiuChucVu(List<NguoiKyGiuChucVu> nguoiKyGiuChucVu) {
+        this.nguoiKyGiuChucVu = nguoiKyGiuChucVu;
+    }
 
     public NguoiKy(String nguoiKyId, String hoTenNguoiKy, CoQuanDonVi coQuanDonVi) {
         this.nguoiKyId = nguoiKyId;
