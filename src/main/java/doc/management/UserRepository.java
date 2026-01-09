@@ -25,7 +25,6 @@ public class UserRepository {
     }
 
 
-
     @Transactional
     public void save(NguoiDung user) {
         entityManager.persist(user);

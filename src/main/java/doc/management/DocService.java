@@ -60,11 +60,11 @@ public class DocService {
         return beforeDelimiter; // in case there's no slash
     }
     public List<VanBanHanhChinhDTOOrg> getAll() {
-        // Image upload logic (if applicable)
         List<VanBanHanhChinh> all = docRepo.getAll();
         List<VanBanHanhChinhDTOOrg> vanBanHanhChinhDTOOrgs = all.stream().map(VanBanHanhChinhMapper::mapEntityToDto).toList();
         return vanBanHanhChinhDTOOrgs;
-    }
+    }     // Image upload logic (if applicable)
+
 
     public VanBanHanhChinhDTOOrg getById(String id){
         return VanBanHanhChinhMapper.mapEntityToDto(docRepo.findById(id));

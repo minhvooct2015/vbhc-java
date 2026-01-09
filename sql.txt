@@ -1,0 +1,105 @@
+create table if not exists ChucVu
+(
+    chucVuId  varchar(100)                 not null
+        primary key,
+    tenChucVu varchar(255) charset utf8mb3 not null
+);
+
+create table if not exists LoaiVanBan
+(
+    loaiVanBanId varchar(100)                               not null
+        primary key,
+    tenLoai      varchar(255) collate utf8mb4_vietnamese_ci null
+);
+
+create table if not exists NguoiDung
+(
+    userId      varchar(100)                 not null
+        primary key,
+    hoTen       varchar(255) charset utf8mb3 not null,
+    email       varchar(255) charset utf8mb3 null,
+    soDienThoai varchar(50) charset utf8mb3  null,
+    tenDangNhap varchar(100) charset utf8mb3 not null,
+    matKhau     varchar(255) charset utf8mb3 not null,
+    constraint tenDangNhap
+        unique (tenDangNhap)
+);
+
+create table if not exists TinhThanhPho
+(
+    tinhThanhPhoId  varchar(100)                 not null
+        primary key,
+    tenTinhThanhPho varchar(255) charset utf8mb3 not null
+);
+
+create table if not exists CoQuanDonVi
+(
+    coQuanDonViId  varchar(100)                 not null
+        primary key,
+    tenCoQuanDonVi varchar(255) charset utf8mb3 not null,
+    tinhThanhPhoId varchar(100)                 null,
+    constraint FK_CoQuanDonVi_TinhThanhPho
+        foreign key (tinhThanhPhoId) references TinhThanhPho (tinhThanhPhoId)
+);
+
+create table if not exists NguoiKy
+(
+    nguoiKyId     varchar(100)                 not null
+        primary key,
+    hoTenNguoiKy  varchar(255) charset utf8mb3 not null,
+    coQuanDonViId varchar(100)                 not null,
+    constraint FK_NguoiKy_CoQuanDonVi
+        foreign key (coQuanDonViId) references CoQuanDonVi (coQuanDonViId)
+);
+
+create table if not exists NguoiKyGiuChucVu
+(
+    nguoiKyId  varchar(100) not null,
+    chucVuId   varchar(100) not null,
+    ngayBatDau date         null,
+    primary key (nguoiKyId, chucVuId),
+    constraint FK_NguoiKyGiuChucVu_ChucVu
+        foreign key (chucVuId) references ChucVu (chucVuId),
+    constraint FK_NguoiKyGiuChucVu_NguoiKy
+        foreign key (nguoiKyId) references NguoiKy (nguoiKyId)
+);
+
+create table if not exists VanBanHanhChinh
+(
+    Id              varchar(100)                  not null
+        primary key,
+    trichYeu        varchar(1000) charset utf8mb3 null,
+    soHieu          varchar(100) charset utf8mb3  null,
+    ngayDen         date                          null,
+    ngayBanHanh     date                          null,
+    tepDinhKem      varchar(255) charset utf8mb3  null,
+    loaiVanBanId    varchar(100)                  not null,
+    coQuanBanHanhId varchar(100)                  not null,
+    nguoiKyId       varchar(100)                  not null,
+    userId          varchar(100)                  not null,
+    chucVuId        varchar(100)                  null,
+    ghiChu          longtext charset utf8mb3      null,
+    constraint FK_VBHC_CoQuanBanHanh
+        foreign key (coQuanBanHanhId) references CoQuanDonVi (coQuanDonViId),
+    constraint FK_VBHC_LoaiVanBan
+        foreign key (loaiVanBanId) references LoaiVanBan (loaiVanBanId),
+    constraint FK_VBHC_NguoiDung
+        foreign key (userId) references NguoiDung (userId),
+    constraint FK_VanBanHanhChinh_NguoiKyGiuChucVu
+        foreign key (nguoiKyId, chucVuId) references NguoiKyGiuChucVu (nguoiKyId, chucVuId)
+);
+
+create table if not exists DonViPhoBien
+(
+    cqdvId varchar(100) not null,
+    vbhcId varchar(100) not null,
+    primary key (cqdvId, vbhcId),
+    constraint DonViPhoBien_ibfk_1
+        foreign key (vbhcId) references VanBanHanhChinh (Id),
+    constraint DonViPhoBien_ibfk_2
+        foreign key (cqdvId) references CoQuanDonVi (coQuanDonViId)
+);
+
+create index vbhcId
+    on DonViPhoBien (vbhcId);
+

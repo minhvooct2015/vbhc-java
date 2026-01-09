@@ -1,6 +1,7 @@
 package doc.management.v2.DTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class VanBanHanhChinhDTOV2 {
     private String id;
@@ -10,13 +11,15 @@ public class VanBanHanhChinhDTOV2 {
     private String coQuanBanHanh;
     private String nguoiKy;
     private String chucVuNguoiKy;
-    private String donViPhoBien;
+    private List<String> donViPhoBien;
     private LocalDate ngayDen;
     private LocalDate ngayBanHanh;
     private String nguoiPhoBien;
     private String tepDinhKem;
 
     private String tenTaiKhoan;
+
+    private String ghiChu;
 
     public String getId() {
         return id;
@@ -50,6 +53,14 @@ public class VanBanHanhChinhDTOV2 {
         this.loaiVanBan = loaiVanBan;
     }
 
+    public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
+    }
+
     public String getCoQuanBanHanh() {
         return coQuanBanHanh;
     }
@@ -74,11 +85,11 @@ public class VanBanHanhChinhDTOV2 {
         this.chucVuNguoiKy = chucVuNguoiKy;
     }
 
-    public String getDonViPhoBien() {
+    public List<String> getDonViPhoBien() {
         return donViPhoBien;
     }
 
-    public void setDonViPhoBien(String donViPhoBien) {
+    public void setDonViPhoBien(List<String> donViPhoBien) {
         this.donViPhoBien = donViPhoBien;
     }
 

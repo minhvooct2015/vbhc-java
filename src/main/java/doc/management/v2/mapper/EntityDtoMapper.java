@@ -3,7 +3,9 @@ package doc.management.v2.mapper;
 import doc.management.v2.DTO.*;
 import doc.management.v2.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class EntityDtoMapper {
@@ -160,22 +162,27 @@ public class EntityDtoMapper {
 
 
         NguoiKyGiuChucVu nguoiKyGiuChucVu = entity.getNguoiKyGiuChucVu();
-        String tenChucVu = nguoiKyGiuChucVu.getChucVu().getTenChucVu();
-        String hoTenNguoiKy = nguoiKyGiuChucVu.getNguoiKy().getHoTenNguoiKy();
-        CoQuanDonVi coQuanBanHanh = entity.getCoQuanBanHanh();
 
+        if(nguoiKyGiuChucVu != null) {
+            String tenChucVu = nguoiKyGiuChucVu.getChucVu().getTenChucVu();
+            String hoTenNguoiKy = nguoiKyGiuChucVu.getNguoiKy().getHoTenNguoiKy();
+            CoQuanDonVi coQuanBanHanh = entity.getCoQuanBanHanh();
+
+            dto.setChucVuNguoiKy(tenChucVu);
+            dto.setCoQuanBanHanh(coQuanBanHanh.getTenCoQuanDonVi());
+            dto.setNguoiKy(hoTenNguoiKy);
+        }
+        dto.setGhiChu(entity.getGhiChu());
         dto.setId(entity.getId());
+        dto.setNguoiPhoBien(entity.getNguoiNhap().getTenDangNhap());
         dto.setTrichYeu(entity.getTrichYeu());
         dto.setSoHieu(entity.getSoHieu());
         dto.setLoaiVanBan(entity.getLoaiVanBan().getTenLoai());
-        dto.setChucVuNguoiKy(tenChucVu);
-        dto.setCoQuanBanHanh(coQuanBanHanh.getTenCoQuanDonVi());
-        dto.setNguoiKy(hoTenNguoiKy);
-        dto.setDonViPhoBien(entity.getDonViPhoBien().getTenCoQuanDonVi());
+// todo fix
+//        dto.setDonViPhoBien(entity.getDonViPhoBien().getTenCoQuanDonVi());
         dto.setNgayDen(entity.getNgayDen());
         dto.setNgayBanHanh(entity.getNgayBanHanh());
         NguoiDung nguoiNhap = entity.getNguoiNhap();
-        dto.setNguoiPhoBien(nguoiNhap.getHoTen());
         dto.setTenTaiKhoan(nguoiNhap.getTenDangNhap());
         dto.setTepDinhKem(entity.getTepDinhKem());
 
@@ -227,4 +234,63 @@ public class EntityDtoMapper {
 //        return list.stream().map(EntityDtoMapper::toVanBanHanhChinhEntity).collect(Collectors.toList());
         return null;
     }
+
+    public static NguoiDung toEntity(NguoiDungDTO dto) {
+        if (dto == null) return null;
+        NguoiDung e = new NguoiDung();
+        e.setUserId(dto.getUserId());
+        e.setHoTen(dto.getHoTen());
+        e.setEmail(dto.getEmail());
+        e.setSoDienThoai(dto.getSoDienThoai());
+        e.setTenDangNhap(dto.getTenDangNhap());
+        e.setMatKhau(dto.getMatKhau());
+        return e;
+    }
+
+    public static NguoiDungDTO toDto(NguoiDung entity) {
+        if (entity == null) return null;
+        NguoiDungDTO dto = new NguoiDungDTO();
+        dto.setUserId(entity.getUserId());
+        dto.setHoTen(entity.getHoTen());
+        dto.setEmail(entity.getEmail());
+        dto.setSoDienThoai(entity.getSoDienThoai());
+        dto.setTenDangNhap(entity.getTenDangNhap());
+        dto.setMatKhau(entity.getMatKhau());
+        return dto;
+    }
+
+    /**
+     * Update an existing managed entity with values from DTO.
+     * Only non-null DTO properties are copied. The primary key (userId) is intentionally NOT modified.
+     *
+     * @param dto    source DTO
+     * @param entity target managed entity to update (must not be null)
+     */
+    public static void updateEntityFromDto(NguoiDungDTO dto, NguoiDung entity) {
+        Objects.requireNonNull(entity, "entity must not be null");
+        if (dto == null) return;
+
+        // do not change primary key (userId) here; set id only when creating a new entity
+        if (dto.getHoTen() != null) entity.setHoTen(dto.getHoTen());
+        if (dto.getEmail() != null) entity.setEmail(dto.getEmail());
+        if (dto.getSoDienThoai() != null) entity.setSoDienThoai(dto.getSoDienThoai());
+        if (dto.getTenDangNhap() != null) entity.setTenDangNhap(dto.getTenDangNhap());
+//        if (dto.getMatKhau() != null) entity.setMatKhau(dto.getMatKhau());
+    }
+
+//    public static List<NguoiDungDTO> toDtoList(List<NguoiDung> entities) {
+//        if (entities == null) return Collections.emptyList();
+//        return entities.stream()
+//                .filter(Objects::nonNull)
+//                .map(NguoiDungMapper::toDto)
+//                .collect(Collectors.toList());
+//    }
+//
+//    public static List<NguoiDung> toEntityList(List<NguoiDungDTO> dtos) {
+//        if (dtos == null) return Collections.emptyList();
+//        return dtos.stream()
+//                .filter(Objects::nonNull)
+//                .map(NguoiDungMapper::toEntity)
+//                .collect(Collectors.toList());
+//    }
 }

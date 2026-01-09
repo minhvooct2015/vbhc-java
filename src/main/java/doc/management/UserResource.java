@@ -2,6 +2,7 @@ package doc.management;
 
 import doc.management.v2.DTO.NguoiDungDTO;
 import doc.management.v2.NguoiDung;
+import doc.management.v2.mapper.EntityDtoMapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -42,10 +43,8 @@ public class UserResource {
     public Response login(DangNhapDTO request) {
         NguoiDung nguoiDung = userService.login(request.getTenDangNhap(), request.getMatKhau());
         if (nguoiDung != null) {
-            // Build DTO to return (without password)
-            NguoiDungDTO dto = new NguoiDungDTO();
-//            dto.setFromEntity(nguoiDung);
-            return Response.ok(dto).build();
+
+            return Response.ok(EntityDtoMapper.toNguoiDungDTOShort(nguoiDung)).build();
         } else {
             return Response.status(Response.Status.UNAUTHORIZED)
                     .entity("{\"error\": \"Tên đăng nhập hoặc mật khẩu không đúng\"}")

@@ -2,7 +2,9 @@ package doc.management.v2;
 
 import doc.management.MultipartBodyImageUpload;
 import doc.management.VanBanHanhChinhDTOOrg;
+import doc.management.v2.DTO.CoQuanDonViDTO;
 import doc.management.v2.DTO.VanBanHanhChinhDTOV2;
+import doc.management.v2.control.JsonComparator;
 import doc.management.v2.control.TinhThanhPhoService;
 import doc.management.v2.control.VBHCService;
 import jakarta.inject.Inject;
@@ -15,11 +17,12 @@ import org.jboss.resteasy.reactive.MultipartForm;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import static doc.management.DocResource.IMAGE_DIRECTORY;
 
-@Path("/doc/v2")
+@Path("doc/v2")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class VanBanHanhChinhResource {
@@ -36,12 +39,34 @@ public class VanBanHanhChinhResource {
 
     @POST
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Path("themVB")
     public Response themVB(@MultipartForm MultipartBodyImageUpload multipartBodyImageUpload) {
 
-        vbhcService.addDOc(multipartBodyImageUpload);
+        vbhcService.addDOc(multipartBodyImageUpload, false);
         return Response.status(Response.Status.CREATED).build();
     }
+
+
+    @GET
+    public Response getJsonDiff(@QueryParam("pageSize") int ps, @QueryParam("pageNumber") int pn) throws Exception {
+
+        Map<String, List<JsonComparator.JsonDifference>> jsonDiff = vbhcService.getJsonDiff(ps, pn);
+        return Response.ok(jsonDiff).build();
+    }
+
+
+    @GET
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Path("cqdv/all")
+    public Response getALlCQDV() {
+        List<CoQuanDonViDTO> entity = vanBanHanhChinhRepo.listCoQuanDonVi();
+        List<CoQuanDonViDTO> coQuanDonViDTOS = entity.stream()
+                .filter(dv -> dv.getTinhThanhPho() == null)
+                .filter(dv -> !dv.getTenCoQuanDonVi().startsWith("Bộ"))
+                .toList();
+        return Response.ok(coQuanDonViDTOS).build();
+    }
+
+
 
 
     @POST
@@ -54,7 +79,15 @@ public class VanBanHanhChinhResource {
     @POST
     @Path("co-quan")
     public Response themCQ(@QueryParam("ten") String ten) {
-        themCQ(ten);
+        vanBanHanhChinhRepo.themCQ(ten);
+        return Response.status(Response.Status.CREATED).build();
+    }
+
+
+    @DELETE
+    @Path("co-quan")
+    public Response removeCq(@QueryParam("ten") String ten) {
+        vanBanHanhChinhRepo.removeCoQuanDonViBy(ten);
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -96,22 +129,28 @@ public class VanBanHanhChinhResource {
     }
 
     @GET
-    @Path("doc/{id}")
+    @Path("{id}")
     public Response getDoc(@jakarta.ws.rs.PathParam("id") String id) {
         VanBanHanhChinhDTOV2 vbhcById = vbhcService.getVBHCById(id);
         return Response.ok(vbhcById).build();
     }
 
+    @GET
+    @Path("all")
+    public Response getDocAll() {
+        List<VanBanHanhChinhDTOV2> vbhcById = vbhcService.getVBHCAll();
+        return Response.ok(vbhcById).build();
+    }
     @DELETE
-    @Path("doc/{id}")
+    @Path("{id}")
     public Response removeDoc(@jakarta.ws.rs.PathParam("id") String id) {
         vbhcService.removeDoc(id);
         return Response.ok().build();
     }
 
     @POST
-    @Path("/seach")
-    public List<VanBanHanhChinhDTOV2> getSanPhamById(VanBanHanhChinhDTOV2 vanBanHanhChinhDTOV2) {
+    @Path("seach")
+    public List<VanBanHanhChinhDTOV2> searchVBHC(VanBanHanhChinhDTOV2 vanBanHanhChinhDTOV2) {
         List<VanBanHanhChinhDTOV2> search = vbhcService.search(vanBanHanhChinhDTOV2);
         return search;
     }
@@ -122,7 +161,7 @@ public class VanBanHanhChinhResource {
     @Transactional
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     //    @RolesAllowed("ADMIN")
-    public Response updateSanPham(
+    public Response updateVBHC(
             @MultipartForm MultipartBodyImageUpload multipartBodyImageUpload
     ) {
 

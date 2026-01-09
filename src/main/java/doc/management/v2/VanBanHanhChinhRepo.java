@@ -1,13 +1,20 @@
 package doc.management.v2;
+import doc.management.v2.DTO.CoQuanDonViDTO;
 import doc.management.v2.DTO.VanBanHanhChinhDTOV2;
 import doc.management.v2.control.TinhThanhPhoService;
+import doc.management.v2.mapper.EntityDtoMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @ApplicationScoped
 public class VanBanHanhChinhRepo {
@@ -17,6 +24,18 @@ public class VanBanHanhChinhRepo {
 
     @Inject
     TinhThanhPhoService tinhThanhPhoService;
+
+    public void themDocJson(DataJson json) {
+        em.persist(json);
+    }
+
+    public List<DataJson> findAllDocJsons() {
+        return em.createQuery("SELECT p FROM DataJson p", DataJson.class).getResultList();
+    }
+
+    public List<DataJson> findAllDocJsons(int ps, int pn) {
+        return em.createQuery("SELECT p FROM DataJson p", DataJson.class).setMaxResults(ps).setFirstResult(pn).getResultList();
+    }
 
     public CoQuanDonVi themCQ(String ten) {
         CoQuanDonVi ob = new CoQuanDonVi();
@@ -58,6 +77,7 @@ public class VanBanHanhChinhRepo {
     @Transactional
     public void createVanBanHanhChinh(VanBanHanhChinh entity) {
         em.persist(entity);
+        em.flush();
     }
 
     @Transactional
@@ -67,117 +87,23 @@ public class VanBanHanhChinhRepo {
 
     @Transactional
     public void removeVanBanHanhChinh(String id) {
+        em.createQuery("DELETE FROM DonViPhoBien d WHERE d.vanBanHanhChinh.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+
+
         VanBanHanhChinh found = em.find(VanBanHanhChinh.class, id);
         if (found != null) {
             em.remove(found);
         }
     }
 
-//    public List<VanBanHanhChinh> searchBy(VanBanHanhChinhDTOV2 dto) {
-//        StringBuilder jpql = new StringBuilder("SELECT v FROM VanBanHanhChinh v WHERE 1=1");
-//
-//        // String fields (partial match)
-//        if (dto.getTrichYeu() != null && !dto.getTrichYeu().isEmpty())
-//            jpql.append(" AND LOWER(v.trichYeu) LIKE :trichYeu");
-//        if (dto.getSoHieu() != null && !dto.getSoHieu().isEmpty())
-//            jpql.append(" AND LOWER(v.soHieu) LIKE :soHieu");
-//        if (dto.getTepDinhKem() != null && !dto.getTepDinhKem().isEmpty())
-//            jpql.append(" AND LOWER(v.tepDinhKem) LIKE :tepDinhKem");
-//
-//        // Date fields (exact match)
-//        if (dto.getNgayDen() != null)
-//            jpql.append(" AND v.ngayDen = :ngayDen");
-//        if (dto.getNgayBanHanh() != null)
-//            jpql.append(" AND v.ngayBanHanh = :ngayBanHanh");
-//
-//        // Relationship: LoaiVanBan
-//        LoaiVanBan loaiVanBanEntity = null;
-//        if (dto.getLoaiVanBan() != null) {
-//            loaiVanBanEntity = findLoaiVanBanByIdOrTen(dto.getLoaiVanBan());
-//            if (loaiVanBanEntity != null)
-//                jpql.append(" AND v.loaiVanBan = :loaiVanBan");
-//        }
-//
-//        // Relationship: CoQuanDonVi (Ban Hanh)
-//        CoQuanDonVi coQuanBanHanhEntity = null;
-//        if (dto.getCoQuanBanHanh() != null) {
-//            coQuanBanHanhEntity = findCoQuanDonViByIdOrTen(dto.getCoQuanBanHanh());
-//            if (coQuanBanHanhEntity != null)
-//                jpql.append(" AND v.coQuanBanHanh = :coQuanBanHanh");
-//        }
-//
-//        // Relationship: DonViPhoBien
-//        CoQuanDonVi donViPhoBienEntity = null;
-//        if (dto.getDonViPhoBien() != null) {
-//            donViPhoBienEntity = findCoQuanDonViByIdOrTen(dto.getDonViPhoBien());
-//            if (donViPhoBienEntity != null)
-//                jpql.append(" AND v.donViPhoBien = :donViPhoBien");
-//        }
-//
-//        // Relationship: NguoiKyGiuChucVu (composite key)
-//        NguoiKyGiuChucVu nguoiKyGiuChucVuEntity = null;
-//        if (dto.getNguoiKy() != null && dto.getChucVuNguoiKy() != null) {
-//            NguoiKyGiuChucVu.NguoiKyGiuChucVuId pk = new NguoiKyGiuChucVu.NguoiKyGiuChucVuId(dto.getNguoiKy(), dto.getChucVuNguoiKy());
-//            nguoiKyGiuChucVuEntity = em.find(NguoiKyGiuChucVu.class, pk);
-//            if (nguoiKyGiuChucVuEntity != null)
-//                jpql.append(" AND v.nguoiKyGiuChucVu = :nguoiKyGiuChucVu");
-//        }
-//
-//        List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByNguoiKy = null;
-//        if (dto.getNguoiKy() != null && dto.getChucVuNguoiKy() == null) {
-//            NguoiKy nguoiKyByIdOrTen = findNguoiKyByIdOrTen(dto.getNguoiKy());
-//            nguoiKyGiuChucVuByNguoiKy = findNguoiKyGiuChucVuByNguoiKy(nguoiKyByIdOrTen);
-//            if (nguoiKyGiuChucVuByNguoiKy != null)
-//                jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
-//        }
-//
-//        List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByChucVu = null;
-//        if (dto.getChucVuNguoiKy() != null && dto.getNguoiKy() == null) {
-//            ChucVu chucVu = findChucVuByIdOrTen(dto.getChucVuNguoiKy());
-//            nguoiKyGiuChucVuByChucVu = findNguoiKyGiuChucVuByChucVu(chucVu);
-//            if (nguoiKyGiuChucVuByChucVu != null)
-//                jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
-//        }
-//
-//        TypedQuery<VanBanHanhChinh> query = em.createQuery(jpql.toString(), VanBanHanhChinh.class);
-//
-//        // Set parameters
-//        if (dto.getTrichYeu() != null && !dto.getTrichYeu().isEmpty())
-//            query.setParameter("trichYeu", "%" + dto.getTrichYeu().toLowerCase() + "%");
-//        if (dto.getSoHieu() != null && !dto.getSoHieu().isEmpty())
-//            query.setParameter("soHieu", "%" + dto.getSoHieu().toLowerCase() + "%");
-//        if (dto.getTepDinhKem() != null && !dto.getTepDinhKem().isEmpty())
-//            query.setParameter("tepDinhKem", "%" + dto.getTepDinhKem().toLowerCase() + "%");
-//
-//        if (dto.getNgayDen() != null)
-//            query.setParameter("ngayDen", dto.getNgayDen());
-//        if (dto.getNgayBanHanh() != null)
-//            query.setParameter("ngayBanHanh", dto.getNgayBanHanh());
-//
-//        if (loaiVanBanEntity != null)
-//            query.setParameter("loaiVanBan", loaiVanBanEntity);
-//        if (coQuanBanHanhEntity != null)
-//            query.setParameter("coQuanBanHanh", coQuanBanHanhEntity);
-//        if (donViPhoBienEntity != null)
-//            query.setParameter("donViPhoBien", donViPhoBienEntity);
-//
-//        if (nguoiKyGiuChucVuEntity != null)
-//            query.setParameter("nguoiKyGiuChucVu", nguoiKyGiuChucVuEntity);
-//        if (nguoiKyGiuChucVuByNguoiKy != null && nguoiKyGiuChucVuByChucVu == null)
-//            query.setParameter("nguoiKyGiuChucVuList", nguoiKyGiuChucVuByNguoiKy);
-//
-//        if (nguoiKyGiuChucVuByChucVu != null && nguoiKyGiuChucVuByNguoiKy == null)
-//            query.setParameter("nguoiKyGiuChucVuList", nguoiKyGiuChucVuByChucVu);
-//
-//
-//        return query.getResultList();
-//    }
-
 
 
     public VanBanHanhChinh findVanBanHanhChinhById(String id) {
         return em.find(VanBanHanhChinh.class, id);
     }
+
 
     public List<VanBanHanhChinh> listVanBanHanhChinh() {
         return em.createQuery("SELECT v FROM VanBanHanhChinh v", VanBanHanhChinh.class).getResultList();
@@ -255,6 +181,14 @@ public class VanBanHanhChinhRepo {
     }
 
     @Transactional
+    public void removeCoQuanDonViBy(String idOrTen) {
+        CoQuanDonVi found = findCoQuanDonViByIdOrTen(idOrTen);
+        if (found != null) {
+            em.remove(found);
+        }
+    }
+
+    @Transactional
     public CoQuanDonVi findOrAddCoQuanDonVi(String idOrTen) {
         CoQuanDonVi found = findCoQuanDonViByIdOrTen(idOrTen);
         if (found != null) {
@@ -264,6 +198,8 @@ public class VanBanHanhChinhRepo {
         CoQuanDonVi coQuanDonVi = themCQ(idOrTen);
         return coQuanDonVi;
     }
+
+
 
     public CoQuanDonVi findCoQuanDonViByIdOrTen(String idOrTen) {
         CoQuanDonVi coQuanDonViById = em.find(CoQuanDonVi.class, idOrTen);
@@ -277,8 +213,10 @@ public class VanBanHanhChinhRepo {
         return null;
     }
 
-    public List<CoQuanDonVi> listCoQuanDonVi() {
-        return em.createQuery("SELECT c FROM CoQuanDonVi c", CoQuanDonVi.class).getResultList();
+    public List<CoQuanDonViDTO> listCoQuanDonVi() {
+        List<CoQuanDonVi> coQuanDonVis = em.createQuery("SELECT c FROM CoQuanDonVi c", CoQuanDonVi.class).getResultList();
+        List<CoQuanDonViDTO> coQuanDonViDTOS = coQuanDonVis.stream().map(EntityDtoMapper::toCoQuanDonViDTO).toList();
+        return coQuanDonViDTOS;
     }
 
     // ----------- ChucVu -----------
@@ -401,6 +339,18 @@ public class VanBanHanhChinhRepo {
         return nguoiKyById;
     }
 
+
+    public List<CoQuanDonVi> findCoQuanBanHanhByVbhcId(String vbId) {
+        List<DonViPhoBien> dvpb = em.createQuery("SELECT c FROM DonViPhoBien c WHERE c.vbhcId = :vbId", DonViPhoBien.class)
+                .setParameter("vbId", vbId)
+                .getResultList();
+        List<CoQuanDonVi> coQuanDonVis = dvpb.stream().map(DonViPhoBien::getCoQuanDonVi).toList();
+        return coQuanDonVis;
+    }
+
+
+
+
     public List<NguoiKy> listNguoiKy() {
         return em.createQuery("SELECT n FROM NguoiKy n", NguoiKy.class).getResultList();
     }
@@ -472,6 +422,30 @@ public class VanBanHanhChinhRepo {
     }
 
     @Transactional
+    public DonViPhoBien addDonViPb(CoQuanDonVi cqdv, VanBanHanhChinh vbhc) {
+        if (cqdv == null || vbhc == null) {
+            throw new IllegalArgumentException("CoQuanDonVi or VanBanHanhChinh not found!");
+        }
+
+        // Check if already exists
+        DonViPhoBien.DonViPhoBienId pk = new DonViPhoBien.DonViPhoBienId(cqdv.getCoQuanDonViId(), vbhc.getId());
+        DonViPhoBien existing = em.find(DonViPhoBien.class, pk);
+
+        if (existing != null) {
+            return existing;
+        }
+
+        DonViPhoBien entity = new DonViPhoBien();
+        entity.setCqdvId(cqdv.getCoQuanDonViId());
+        entity.setVbhcId(vbhc.getId());
+        entity.setVanBanHanhChinh(vbhc);
+        entity.setCoQuanDonVi(cqdv);
+
+        em.persist(entity);
+        return entity;
+    }
+
+    @Transactional
     public NguoiKyGiuChucVu addNguoiKyGiuChucVu(NguoiKy nguoiKy, ChucVu chucVu) {
 
         if (nguoiKy == null || chucVu == null) {
@@ -517,7 +491,7 @@ public class VanBanHanhChinhRepo {
         // Find CoQuanDonVi by name
         List<NguoiKyGiuChucVu> cq = em.createQuery(
                         "SELECT c FROM NguoiKyGiuChucVu c WHERE c.nguoiKy = :nguoiKy", NguoiKyGiuChucVu.class)
-                .setParameter("nguoiKy", nguoiKy.getNguoiKyId())
+                .setParameter("nguoiKy", nguoiKy)
                 .getResultList();
         return cq;
     }
@@ -536,9 +510,117 @@ public class VanBanHanhChinhRepo {
         return em.createQuery("SELECT n FROM NguoiKyGiuChucVu n", NguoiKyGiuChucVu.class).getResultList();
     }
 
+    public List<VanBanHanhChinh> searchByDonViPhoBien(VanBanHanhChinhDTOV2 dto) {
+        List<String> donViPhoBien = dto.getDonViPhoBien();
+
+        return donViPhoBien.stream()
+                .map(dv -> findCoQuanDonViByIdOrTen(dv))   // CoQuanDonVi or null
+                .filter(Objects::nonNull)
+                .flatMap(cqdv -> {
+                    List<VanBanHanhChinh> list = cqdv.getVanBanPhoBien();
+                    return (list == null) ? Stream.empty() : list.stream();
+                })
+                .toList();
+    }
+//    public List<VanBanHanhChinh> searchBy(VanBanHanhChinhDTOV2 dto) {
+//        String defaultSql = "SELECT v FROM VanBanHanhChinh v WHERE 1=1";
+//        StringBuilder jpql = new StringBuilder(defaultSql);
+//
+//        // String fields (partial match, case-insensitive)
+//        if (dto.getTrichYeu() != null && !dto.getTrichYeu().isEmpty())
+//            jpql.append(" AND LOWER(v.trichYeu) LIKE :trichYeu");
+//        if (dto.getSoHieu() != null && !dto.getSoHieu().isEmpty())
+//            jpql.append(" AND LOWER(v.soHieu) LIKE :soHieu");
+//        if (dto.getTepDinhKem() != null && !dto.getTepDinhKem().isEmpty())
+//            jpql.append(" AND LOWER(v.tepDinhKem) LIKE :tepDinhKem");
+//
+//        // Date fields (exact match)
+//        if (dto.getNgayDen() != null)
+//            jpql.append(" AND v.ngayDen = :ngayDen");
+//        if (dto.getNgayBanHanh() != null)
+//            jpql.append(" AND v.ngayBanHanh = :ngayBanHanh");
+//
+//        // Relationship: LoaiVanBan
+//        LoaiVanBan loaiVanBanEntity = null;
+//        if (dto.getLoaiVanBan() != null) {
+//            loaiVanBanEntity = findLoaiVanBanByIdOrTen(dto.getLoaiVanBan());
+//            if (loaiVanBanEntity != null)
+//                jpql.append(" AND v.loaiVanBan = :loaiVanBan");
+//        }
+//
+//        // Relationship: CoQuanDonVi (Ban Hanh)
+//        CoQuanDonVi coQuanBanHanhEntity = null;
+//        if (dto.getCoQuanBanHanh() != null) {
+//            coQuanBanHanhEntity = findCoQuanDonViByIdOrTen(dto.getCoQuanBanHanh());
+//            if (coQuanBanHanhEntity != null)
+//                jpql.append(" AND v.coQuanBanHanh = :coQuanBanHanh");
+//        }
+//
+//
+//        // ========== Mutually Exclusive Composite Key Logic ==========
+//        NguoiKyGiuChucVu nguoiKyGiuChucVuEntity = null;
+//        List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByNguoiKy = null;
+//        List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByChucVu = null;
+//
+//        if (dto.getNguoiKy() != null && dto.getChucVuNguoiKy() != null) {
+//            // Composite key search (exact match)
+//            NguoiKyGiuChucVu.NguoiKyGiuChucVuId pk = new NguoiKyGiuChucVu.NguoiKyGiuChucVuId(dto.getNguoiKy(), dto.getChucVuNguoiKy());
+//            nguoiKyGiuChucVuEntity = em.find(NguoiKyGiuChucVu.class, pk);
+//            if (nguoiKyGiuChucVuEntity != null)
+//                jpql.append(" AND v.nguoiKyGiuChucVu = :nguoiKyGiuChucVu");
+//        } else if (dto.getNguoiKy() != null) {
+//            // Search by NguoiKy only (all ChucVu)
+//            NguoiKy nguoiKyByIdOrTen = findNguoiKyByIdOrTen(dto.getNguoiKy());
+//            nguoiKyGiuChucVuByNguoiKy = findNguoiKyGiuChucVuByNguoiKy(nguoiKyByIdOrTen);
+//            if (nguoiKyGiuChucVuByNguoiKy != null && !nguoiKyGiuChucVuByNguoiKy.isEmpty())
+//                jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
+//        } else if (dto.getChucVuNguoiKy() != null) {
+//            // Search by ChucVu only (all NguoiKy)
+//            ChucVu chucVu = findChucVuByIdOrTen(dto.getChucVuNguoiKy());
+//            nguoiKyGiuChucVuByChucVu = findNguoiKyGiuChucVuByChucVu(chucVu);
+//            if (nguoiKyGiuChucVuByChucVu != null && !nguoiKyGiuChucVuByChucVu.isEmpty())
+//                jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
+//        }
+//        // ===========================================================
+//
+//        TypedQuery<VanBanHanhChinh> query = em.createQuery(jpql.toString(), VanBanHanhChinh.class);
+//
+//        // Set parameters for string fields
+//        if (dto.getTrichYeu() != null && !dto.getTrichYeu().isEmpty())
+//            query.setParameter("trichYeu", "%" + dto.getTrichYeu().toLowerCase() + "%");
+//        if (dto.getSoHieu() != null && !dto.getSoHieu().isEmpty())
+//            query.setParameter("soHieu", "%" + dto.getSoHieu().toLowerCase() + "%");
+//        if (dto.getTepDinhKem() != null && !dto.getTepDinhKem().isEmpty())
+//            query.setParameter("tepDinhKem", "%" + dto.getTepDinhKem().toLowerCase() + "%");
+//
+//        // Set parameters for date fields
+//        if (dto.getNgayDen() != null)
+//            query.setParameter("ngayDen", dto.getNgayDen());
+//        if (dto.getNgayBanHanh() != null)
+//            query.setParameter("ngayBanHanh", dto.getNgayBanHanh());
+//
+//        // Set parameters for relationships
+//        if (loaiVanBanEntity != null)
+//            query.setParameter("loaiVanBan", loaiVanBanEntity);
+//        if (coQuanBanHanhEntity != null)
+//            query.setParameter("coQuanBanHanh", coQuanBanHanhEntity);
+//
+//        // Set parameters for composite key logic
+//        if (nguoiKyGiuChucVuEntity != null) {
+//            query.setParameter("nguoiKyGiuChucVu", nguoiKyGiuChucVuEntity);
+//        } else if (nguoiKyGiuChucVuByNguoiKy != null && !nguoiKyGiuChucVuByNguoiKy.isEmpty()) {
+//            query.setParameter("nguoiKyGiuChucVuList", nguoiKyGiuChucVuByNguoiKy);
+//        } else if (nguoiKyGiuChucVuByChucVu != null && !nguoiKyGiuChucVuByChucVu.isEmpty()) {
+//            query.setParameter("nguoiKyGiuChucVuList", nguoiKyGiuChucVuByChucVu);
+//        }
+//        // End composite key logic
+//        if(jpql.toString().equals(defaultSql)) return null;
+//        return query.getResultList();
+//    }
 
     public List<VanBanHanhChinh> searchBy(VanBanHanhChinhDTOV2 dto) {
-        StringBuilder jpql = new StringBuilder("SELECT v FROM VanBanHanhChinh v WHERE 1=1");
+        String defaultSql = "SELECT v FROM VanBanHanhChinh v WHERE 1=1";
+        StringBuilder jpql = new StringBuilder(defaultSql);
 
         // String fields (partial match, case-insensitive)
         if (dto.getTrichYeu() != null && !dto.getTrichYeu().isEmpty())
@@ -570,37 +652,47 @@ public class VanBanHanhChinhRepo {
                 jpql.append(" AND v.coQuanBanHanh = :coQuanBanHanh");
         }
 
-        // Relationship: DonViPhoBien
-        CoQuanDonVi donViPhoBienEntity = null;
-        if (dto.getDonViPhoBien() != null) {
-            donViPhoBienEntity = findCoQuanDonViByIdOrTen(dto.getDonViPhoBien());
-            if (donViPhoBienEntity != null)
-                jpql.append(" AND v.donViPhoBien = :donViPhoBien");
-        }
-
         // ========== Mutually Exclusive Composite Key Logic ==========
         NguoiKyGiuChucVu nguoiKyGiuChucVuEntity = null;
         List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByNguoiKy = null;
         List<NguoiKyGiuChucVu> nguoiKyGiuChucVuByChucVu = null;
 
         if (dto.getNguoiKy() != null && dto.getChucVuNguoiKy() != null) {
-            // Composite key search (exact match)
             NguoiKyGiuChucVu.NguoiKyGiuChucVuId pk = new NguoiKyGiuChucVu.NguoiKyGiuChucVuId(dto.getNguoiKy(), dto.getChucVuNguoiKy());
             nguoiKyGiuChucVuEntity = em.find(NguoiKyGiuChucVu.class, pk);
             if (nguoiKyGiuChucVuEntity != null)
                 jpql.append(" AND v.nguoiKyGiuChucVu = :nguoiKyGiuChucVu");
         } else if (dto.getNguoiKy() != null) {
-            // Search by NguoiKy only (all ChucVu)
             NguoiKy nguoiKyByIdOrTen = findNguoiKyByIdOrTen(dto.getNguoiKy());
             nguoiKyGiuChucVuByNguoiKy = findNguoiKyGiuChucVuByNguoiKy(nguoiKyByIdOrTen);
             if (nguoiKyGiuChucVuByNguoiKy != null && !nguoiKyGiuChucVuByNguoiKy.isEmpty())
                 jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
         } else if (dto.getChucVuNguoiKy() != null) {
-            // Search by ChucVu only (all NguoiKy)
             ChucVu chucVu = findChucVuByIdOrTen(dto.getChucVuNguoiKy());
             nguoiKyGiuChucVuByChucVu = findNguoiKyGiuChucVuByChucVu(chucVu);
             if (nguoiKyGiuChucVuByChucVu != null && !nguoiKyGiuChucVuByChucVu.isEmpty())
                 jpql.append(" AND v.nguoiKyGiuChucVu IN :nguoiKyGiuChucVuList");
+        }
+        // ===========================================================
+
+        // ======= New: filter by donViPhoBien (List<String>) =======
+        List<CoQuanDonVi> coQuanFilterList = null;
+        List<String> donViPhoBien = dto.getDonViPhoBien();
+        if (donViPhoBien != null && !donViPhoBien.isEmpty()) {
+            // resolve each name/id to CoQuanDonVi entity (remove nulls and duplicates)
+            coQuanFilterList = donViPhoBien.stream()
+                    .map(this::findCoQuanDonViByIdOrTen)
+                    .filter(Objects::nonNull)
+                    .distinct()
+                    .collect(Collectors.toList());
+
+            // if none matched, no results are possible
+            if (coQuanFilterList.isEmpty()) {
+                return Collections.emptyList();
+            }
+
+            // use an EXISTS subquery on the join entity DonViPhoBien to find v that have any of the coQuanFilterList
+            jpql.append(" AND EXISTS (SELECT d FROM DonViPhoBien d WHERE d.vanBanHanhChinh = v AND d.coQuanDonVi IN :coQuanDonViList)");
         }
         // ===========================================================
 
@@ -625,8 +717,6 @@ public class VanBanHanhChinhRepo {
             query.setParameter("loaiVanBan", loaiVanBanEntity);
         if (coQuanBanHanhEntity != null)
             query.setParameter("coQuanBanHanh", coQuanBanHanhEntity);
-        if (donViPhoBienEntity != null)
-            query.setParameter("donViPhoBien", donViPhoBienEntity);
 
         // Set parameters for composite key logic
         if (nguoiKyGiuChucVuEntity != null) {
@@ -636,8 +726,14 @@ public class VanBanHanhChinhRepo {
         } else if (nguoiKyGiuChucVuByChucVu != null && !nguoiKyGiuChucVuByChucVu.isEmpty()) {
             query.setParameter("nguoiKyGiuChucVuList", nguoiKyGiuChucVuByChucVu);
         }
-        // End composite key logic
 
+        // set parameter for donViPhoBien filter
+        if (coQuanFilterList != null && !coQuanFilterList.isEmpty()) {
+            query.setParameter("coQuanDonViList", coQuanFilterList);
+        }
+
+        // End composite key logic
+        if (jpql.toString().equals(defaultSql)) return null;
         return query.getResultList();
     }
 }

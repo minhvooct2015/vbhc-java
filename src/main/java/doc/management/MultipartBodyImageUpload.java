@@ -15,6 +15,10 @@ public class MultipartBodyImageUpload {
     @PartType(MediaType.TEXT_PLAIN)
     private String docInfo;
 
+    @FormParam("orgDoc")
+    @PartType(MediaType.TEXT_PLAIN)
+    private String orgDoc;
+
     public InputStream getFile() {
         return file;
     }
@@ -29,5 +33,13 @@ public class MultipartBodyImageUpload {
 
     public void setDocInfo(String docInfo) {
         this.docInfo = docInfo;
+    }
+
+    public String getOrgDoc() {
+        return orgDoc;
+    }
+
+    public void setOrgDoc(String orgDoc) {
+        this.orgDoc = orgDoc;
     }
 }

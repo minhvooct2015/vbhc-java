@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 public class VanBanHanhChinhMapper {
     public static VanBanHanhChinh mapDtoToEntity(VanBanHanhChinhDTOOrg dto) {
         if (dto == null) return null;
@@ -44,6 +47,7 @@ public class VanBanHanhChinhMapper {
      */
     public static <T> T fromString(String json, Class<T> classType){
         try {
+            log.info("input json = {}", json);
             return objectMapper.readValue(json, classType);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

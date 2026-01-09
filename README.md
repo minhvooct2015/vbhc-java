@@ -60,7 +60,8 @@ mvn io.quarkus:quarkus-maven-plugin:3.11.1:create -DprojectGroupId=doc.managemen
 
 
 
-docker pull mysql:8.0
+docker pull mysql:8.0java
+
 
 docker run --name doc-database -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 -d mysql:8.0
 
@@ -137,3 +138,6 @@ curl -X 'POST' \
 "tepDinhKem": "string",
 "tenTaiKhoan": "string"
 }
+
+
+{"trichYeu":"V/v xây dựng nhiệm vụ KHẤCN cấp ĐHQG-HCM năm 2022 và giai đoạn 2021-2025","soHieu":"612/ĐHQG-KHCN","loaiVanBan":"Công văn","coQuanBanHanh":"ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH","nguoiKy":"Lâm Quang Vinh","ghiChu":"","chucVuNguoiKy":"TRƯỞNG BAN BAN KHẮCN","donViPhoBien":[],"ngayBanHanh":"2021-04-23","nguoiPhoBien":"Admin","tepDinhKem":"Cong-Van_011.pdf"}

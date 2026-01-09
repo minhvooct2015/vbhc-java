@@ -149,5 +149,19 @@ INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
 (UUID(), N'Yên Bái');
 
 
+
+CREATE TABLE DonViPhoBien (
+cqdvId varchar(100) NOT NULL,
+vbhcId varchar(100) NOT NULL,
+PRIMARY KEY (cqdvId, vbhcId),
+
+FOREIGN KEY (vbhcId) REFERENCES VanBanHanhChinh(id),
+FOREIGN KEY (cqdvId) REFERENCES CoQuanDonVi(coQuanDonViId)
+
+);
+
+
+add doc:
+"{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":[\"Phòng Đào tạo\"],\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-01\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"nguoiPhoBien\":\"admin\"}"
 update:
-"{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":\"Phòng Đào tạo\",\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-01\",\"nguoiPhoBien\":\"string\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"tenTaiKhoan\":\"admin\"}"
+"{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":[\"Phòng Đào tạo\"],\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-10\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"nguoiPhoBien\":\"admin\"}"

@@ -7,6 +7,10 @@ import jakarta.persistence.Column;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Entity
 public class CoQuanDonVi {
     @Id
@@ -18,6 +22,11 @@ public class CoQuanDonVi {
     @ManyToOne
     @JoinColumn(name = "tinhThanhPhoId")
     private TinhThanhPho tinhThanhPho;
+
+
+    // links to join entity
+    @OneToMany(mappedBy = "coQuanDonVi", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<DonViPhoBien> donViPhoBienLinks = new HashSet<>();
 
     public CoQuanDonVi() {}
 
@@ -47,7 +56,40 @@ public class CoQuanDonVi {
         return tinhThanhPho;
     }
 
+    public Set<DonViPhoBien> getDonViPhoBienLinks() {
+        return donViPhoBienLinks;
+    }
+
+    public void setDonViPhoBienLinks(Set<DonViPhoBien> donViPhoBienLinks) {
+        this.donViPhoBienLinks = donViPhoBienLinks;
+    }
+
     public void setTinhThanhPho(TinhThanhPho tinhThanhPho) {
         this.tinhThanhPho = tinhThanhPho;
+    }
+
+    public List<VanBanHanhChinh> getVanBanPhoBien() {
+        Set<VanBanHanhChinh> result = new HashSet<>();
+        for (DonViPhoBien link : donViPhoBienLinks) {
+            if (link.getVanBanHanhChinh() != null) {
+                result.add(link.getVanBanHanhChinh());
+            }
+        }
+        return result.stream().toList();
+    }
+
+
+    // equals/hashCode based on primary key
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CoQuanDonVi that = (CoQuanDonVi) o;
+        return coQuanDonViId != null && coQuanDonViId.equals(that.coQuanDonViId);
+    }
+
+    @Override
+    public int hashCode() {
+        return (coQuanDonViId != null) ? coQuanDonViId.hashCode() : 0;
     }
 }
