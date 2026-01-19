@@ -120,7 +120,10 @@ curl -X 'POST' \
 -F 'file=@Cong-Van_247.pdf;type=application/pdf' \
 -F 'docInfo={  "trichYeu": "Quy định về an toàn lao động",   "soHieu": "QĐ-2023/ATLD",   "loaiVanBan": "Quyết định",   "coQuanBanHanh": "Bộ Lao động",   "nguoiKy": "Nguyễn Văn A",   "chucVuNguoiKy": "Bộ trưởng",   "donViPhoBien": "Phòng Nhân sự",   "ngayDen": "2025-09-01",   "ngayBanHanh": "2025-08-25",   "nguoiPhoBien": "Trần Thị B",   "tepDinhKem": "quydinh-atld.pdf" };type=text/plain'
 
-
+docker run --name doc-database-pg \
+-e MYSQL_ROOT_PASSWORD=123456 \
+-p 3306:3306 \
+-d mysql:8.0
 
 
 {

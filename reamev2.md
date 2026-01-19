@@ -1,86 +1,133 @@
--- Tạo bảng LoaiVanBan
-CREATE TABLE LoaiVanBan (
-loaiVanBanId INT PRIMARY KEY AUTO_INCREMENT,
-tenLoai NVARCHAR(255) NOT NULL
+CREATE DATABASE vbhcDb;
+
+
+
+
+CREATE TABLE DonViPhoBien (
+cqdvId varchar(100) NOT NULL,
+vbhcId varchar(100) NOT NULL,
+PRIMARY KEY (cqdvId, vbhcId),
+
+FOREIGN KEY (vbhcId) REFERENCES VanBanHanhChinh(id),
+FOREIGN KEY (cqdvId) REFERENCES CoQuanDonVi(coQuanDonViId)
+
 );
 
--- Tạo bảng CoQuanDonVi
-CREATE TABLE CoQuanDonVi (
-coQuanDonViId INT PRIMARY KEY AUTO_INCREMENT,
-tenCoQuanDonVi NVARCHAR(255) NOT NULL
+
+add doc:create table ChucVu
+(
+chucVuId  varchar(100)                 not null
+primary key,
+tenChucVu varchar(255) charset utf8mb3 not null
 );
 
--- Tạo bảng ChucVu
-CREATE TABLE ChucVu (
-chucVuId INT PRIMARY KEY AUTO_INCREMENT,
-tenChucVu NVARCHAR(255) NOT NULL
+create table DataJson
+(
+Id           varchar(100) not null
+primary key,
+OrgDocJson   longtext     null,
+OrgLatestDoc longtext     null
 );
 
--- Tạo bảng NguoiKy
-CREATE TABLE NguoiKy (
-nguoiKyId INT PRIMARY KEY AUTO_INCREMENT,
-hoTenNguoiKy NVARCHAR(255) NOT NULL,
-coQuanDonViId INT NOT NULL,
-CONSTRAINT FK_NguoiKy_CoQuanDonVi FOREIGN KEY (coQuanDonViId) REFERENCES CoQuanDonVi(coQuanDonViId)
+create table LoaiVanBan
+(
+loaiVanBanId varchar(100)                               not null
+primary key,
+tenLoai      varchar(255) collate utf8mb4_vietnamese_ci null
 );
 
--- Tạo bảng NguoiDung
-CREATE TABLE NguoiDung (
-userId INT PRIMARY KEY AUTO_INCREMENT,
-hoTen NVARCHAR(255) NOT NULL,
-email NVARCHAR(255),
-soDienThoai NVARCHAR(50),
-tenDangNhap NVARCHAR(100) NOT NULL UNIQUE,
-matKhau NVARCHAR(255) NOT NULL
+create table NguoiDung
+(
+userId      varchar(100)                 not null
+primary key,
+hoTen       varchar(255) charset utf8mb3 not null,
+email       varchar(255) charset utf8mb3 null,
+soDienThoai varchar(50) charset utf8mb3  null,
+tenDangNhap varchar(100) charset utf8mb3 not null,
+matKhau     varchar(255) charset utf8mb3 not null,
+constraint tenDangNhap
+unique (tenDangNhap)
 );
 
--- Tạo bảng NguoiKyGiuChucVu (bảng liên kết n-n giữa NguoiKy và ChucVu)
-CREATE TABLE NguoiKyGiuChucVu (
-nguoiKyId INT NOT NULL,
-chucVuId INT NOT NULL,
-ngayBatDau DATE,
-PRIMARY KEY (nguoiKyId, chucVuId),
-CONSTRAINT FK_NguoiKyGiuChucVu_NguoiKy FOREIGN KEY (nguoiKyId) REFERENCES NguoiKy(nguoiKyId),
-CONSTRAINT FK_NguoiKyGiuChucVu_ChucVu FOREIGN KEY (chucVuId) REFERENCES ChucVu(chucVuId)
+create table TinhThanhPho
+(
+tinhThanhPhoId  varchar(100)                 not null
+primary key,
+tenTinhThanhPho varchar(255) charset utf8mb3 not null
 );
 
--- Tạo bảng VanBanHanhChinh
-CREATE TABLE VanBanHanhChinh (
-Id INT PRIMARY KEY AUTO_INCREMENT,
-trichYeu NVARCHAR(1000),
-soHieu NVARCHAR(100),
-ngayDen DATE,
-ngayBanHanh DATE,
-tepDinhKem NVARCHAR(255),
-loaiVanBanId INT NOT NULL,
-coQuanBanHanhId INT NOT NULL,
-donViPhoBienId INT NOT NULL,
-nguoiKyId INT NOT NULL,
-userId INT NOT NULL,
-CONSTRAINT FK_VBHC_LoaiVanBan FOREIGN KEY (loaiVanBanId) REFERENCES LoaiVanBan(loaiVanBanId),
-CONSTRAINT FK_VBHC_CoQuanBanHanh FOREIGN KEY (coQuanBanHanhId) REFERENCES CoQuanDonVi(coQuanDonViId),
-CONSTRAINT FK_VBHC_DonViPhoBien FOREIGN KEY (donViPhoBienId) REFERENCES CoQuanDonVi(coQuanDonViId),
-
-[//]: # (CONSTRAINT FK_VBHC_NguoiKy FOREIGN KEY &#40;nguoiKyId&#41; REFERENCES NguoiKy&#40;nguoiKyId&#41;,)
-CONSTRAINT FK_VBHC_NguoiDung FOREIGN KEY (userId) REFERENCES NguoiDung(userId)
+create table CoQuanDonVi
+(
+coQuanDonViId  varchar(100)                 not null
+primary key,
+tenCoQuanDonVi varchar(255) charset utf8mb3 not null,
+tinhThanhPhoId varchar(100)                 null,
+constraint FK_CoQuanDonVi_TinhThanhPho
+foreign key (tinhThanhPhoId) references TinhThanhPho (tinhThanhPhoId)
 );
 
-CREATE TABLE TinhThanhPho (
-tinhThanhPhoId VARCHAR(100) PRIMARY KEY,
-tenTinhThanhPho NVARCHAR(255) NOT NULL
+create table NguoiKy
+(
+nguoiKyId     varchar(100)                 not null
+primary key,
+hoTenNguoiKy  varchar(255) charset utf8mb3 not null,
+coQuanDonViId varchar(100)                 not null,
+constraint FK_NguoiKy_CoQuanDonVi
+foreign key (coQuanDonViId) references CoQuanDonVi (coQuanDonViId)
 );
 
-ALTER TABLE CoQuanDonVi
-ADD tinhThanhPhoId VARCHAR(100),
-ADD CONSTRAINT FK_CoQuanDonVi_TinhThanhPho FOREIGN KEY (tinhThanhPhoId) REFERENCES 
-TinhThanhPho(tinhThanhPhoId);
+create table NguoiKyGiuChucVu
+(
+nguoiKyId  varchar(100) not null,
+chucVuId   varchar(100) not null,
+ngayBatDau date         null,
+primary key (nguoiKyId, chucVuId),
+constraint FK_NguoiKyGiuChucVu_ChucVu
+foreign key (chucVuId) references ChucVu (chucVuId),
+constraint FK_NguoiKyGiuChucVu_NguoiKy
+foreign key (nguoiKyId) references NguoiKy (nguoiKyId)
+);
+
+create table VanBanHanhChinh
+(
+Id              varchar(100)                  not null
+primary key,
+trichYeu        varchar(1000) charset utf8mb3 null,
+soHieu          varchar(100) charset utf8mb3  null,
+ngayDen         date                          null,
+ngayBanHanh     date                          null,
+tepDinhKem      varchar(255) charset utf8mb3  null,
+loaiVanBanId    varchar(100)                  not null,
+coQuanBanHanhId varchar(100)                  not null,
+nguoiKyId       varchar(100)                  not null,
+userId          varchar(100)                  not null,
+chucVuId        varchar(100)                  null,
+ghiChu          longtext charset utf8mb3      null,
+constraint FK_VBHC_CoQuanBanHanh
+foreign key (coQuanBanHanhId) references CoQuanDonVi (coQuanDonViId),
+constraint FK_VBHC_LoaiVanBan
+foreign key (loaiVanBanId) references LoaiVanBan (loaiVanBanId),
+constraint FK_VBHC_NguoiDung
+foreign key (userId) references NguoiDung (userId),
+constraint FK_VanBanHanhChinh_NguoiKyGiuChucVu
+foreign key (nguoiKyId, chucVuId) references NguoiKyGiuChucVu (nguoiKyId, chucVuId)
+);
+
+create table DonViPhoBien
+(
+cqdvId varchar(100) not null,
+vbhcId varchar(100) not null,
+primary key (cqdvId, vbhcId),
+constraint DonViPhoBien_ibfk_1
+foreign key (vbhcId) references VanBanHanhChinh (Id),
+constraint DonViPhoBien_ibfk_2
+foreign key (cqdvId) references CoQuanDonVi (coQuanDonViId)
+);
+
+create index vbhcId
+on DonViPhoBien (vbhcId);
 
 
-ALTER TABLE VanBanHanhChinh
-ADD chucVuId VARCHAR(100),
-ADD CONSTRAINT FK_VanBanHanhChinh_NguoiKyGiuChucVu
-FOREIGN KEY (nguoiKyId, chucVuId)
-REFERENCES NguoiKyGiuChucVu(nguoiKyId, chucVuId);
 
 
 INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
@@ -148,20 +195,192 @@ INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
 (UUID(), N'Vĩnh Phúc'),
 (UUID(), N'Yên Bái');
 
-
-
-CREATE TABLE DonViPhoBien (
-cqdvId varchar(100) NOT NULL,
-vbhcId varchar(100) NOT NULL,
-PRIMARY KEY (cqdvId, vbhcId),
-
-FOREIGN KEY (vbhcId) REFERENCES VanBanHanhChinh(id),
-FOREIGN KEY (cqdvId) REFERENCES CoQuanDonVi(coQuanDonViId)
-
-);
-
-
-add doc:
 "{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":[\"Phòng Đào tạo\"],\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-01\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"nguoiPhoBien\":\"admin\"}"
 update:
 "{\"id\":\"650b6299-47bd-43bc-945c-9245632c850b\",\"trichYeu\":\"Về việc nâng cao chất lượng đào tạo\",\"soHieu\":\"QĐ-2025/DT\",\"loaiVanBan\":\"Quyết định\",\"coQuanBanHanh\":\"Bộ Giáo dục và Đào tạo\",\"nguoiKy\":\"Lê Văn Tám\",\"chucVuNguoiKy\":\"Thứ trưởng\",\"donViPhoBien\":[\"Phòng Đào tạo\"],\"ngayDen\":\"2025-09-06\",\"ngayBanHanh\":\"2025-09-10\",\"tepDinhKem\":\"quyetdinh241.pdf\",\"nguoiPhoBien\":\"admin\"}"
+
+Phai them admin vao ngNhap, neu khong se loi nha
+
+[//]: # (postgres init)
+
+
+create table ChucVu
+(
+chucVuId  varchar(100)                 not null
+primary key,
+tenChucVu varchar(255) charset utf8mb3 not null
+);
+
+create table DataJson
+(
+Id           varchar(100) not null
+primary key,
+OrgDocJson   longtext     null,
+OrgLatestDoc longtext     null
+);
+
+create table LoaiVanBan
+(
+loaiVanBanId varchar(100)                               not null
+primary key,
+tenLoai      varchar(255) collate utf8mb4_vietnamese_ci null
+);
+
+create table NguoiDung
+(
+userId      varchar(100)                 not null
+primary key,
+hoTen       varchar(255) charset utf8mb3 not null,
+email       varchar(255) charset utf8mb3 null,
+soDienThoai varchar(50) charset utf8mb3  null,
+tenDangNhap varchar(100) charset utf8mb3 not null,
+matKhau     varchar(255) charset utf8mb3 not null,
+constraint tenDangNhap
+unique (tenDangNhap)
+);
+
+create table TinhThanhPho
+(
+tinhThanhPhoId  varchar(100)                 not null
+primary key,
+tenTinhThanhPho varchar(255) charset utf8mb3 not null
+);
+
+create table CoQuanDonVi
+(
+coQuanDonViId  varchar(100)                 not null
+primary key,
+tenCoQuanDonVi varchar(255) charset utf8mb3 not null,
+tinhThanhPhoId varchar(100)                 null,
+constraint FK_CoQuanDonVi_TinhThanhPho
+foreign key (tinhThanhPhoId) references TinhThanhPho (tinhThanhPhoId)
+);
+
+create table NguoiKy
+(
+nguoiKyId     varchar(100)                 not null
+primary key,
+hoTenNguoiKy  varchar(255) charset utf8mb3 not null,
+coQuanDonViId varchar(100)                 not null,
+constraint FK_NguoiKy_CoQuanDonVi
+foreign key (coQuanDonViId) references CoQuanDonVi (coQuanDonViId)
+);
+
+create table NguoiKyGiuChucVu
+(
+nguoiKyId  varchar(100) not null,
+chucVuId   varchar(100) not null,
+ngayBatDau date         null,
+primary key (nguoiKyId, chucVuId),
+constraint FK_NguoiKyGiuChucVu_ChucVu
+foreign key (chucVuId) references ChucVu (chucVuId),
+constraint FK_NguoiKyGiuChucVu_NguoiKy
+foreign key (nguoiKyId) references NguoiKy (nguoiKyId)
+);
+
+create table VanBanHanhChinh
+(
+Id              varchar(100)                  not null
+primary key,
+trichYeu        varchar(1000) charset utf8mb3 null,
+soHieu          varchar(100) charset utf8mb3  null,
+ngayDen         date                          null,
+ngayBanHanh     date                          null,
+tepDinhKem      varchar(255) charset utf8mb3  null,
+loaiVanBanId    varchar(100)                  not null,
+coQuanBanHanhId varchar(100)                  not null,
+nguoiKyId       varchar(100)                  not null,
+userId          varchar(100)                  not null,
+chucVuId        varchar(100)                  null,
+ghiChu          longtext charset utf8mb3      null,
+constraint FK_VBHC_CoQuanBanHanh
+foreign key (coQuanBanHanhId) references CoQuanDonVi (coQuanDonViId),
+constraint FK_VBHC_LoaiVanBan
+foreign key (loaiVanBanId) references LoaiVanBan (loaiVanBanId),
+constraint FK_VBHC_NguoiDung
+foreign key (userId) references NguoiDung (userId),
+constraint FK_VanBanHanhChinh_NguoiKyGiuChucVu
+foreign key (nguoiKyId, chucVuId) references NguoiKyGiuChucVu (nguoiKyId, chucVuId)
+);
+
+create table DonViPhoBien
+(
+cqdvId varchar(100) not null,
+vbhcId varchar(100) not null,
+primary key (cqdvId, vbhcId),
+constraint DonViPhoBien_ibfk_1
+foreign key (vbhcId) references VanBanHanhChinh (Id),
+constraint DonViPhoBien_ibfk_2
+foreign key (cqdvId) references CoQuanDonVi (coQuanDonViId)
+);
+
+create index vbhcId
+on DonViPhoBien (vbhcId);
+
+
+
+
+INSERT INTO TinhThanhPho (tinhThanhPhoId, tenTinhThanhPho) VALUES
+(gen_random_uuid()::varchar, N'An Giang'),
+(gen_random_uuid()::varchar, N'Bà Rịa - Vũng Tàu'),
+(gen_random_uuid()::varchar, N'Bắc Giang'),
+(gen_random_uuid()::varchar, N'Bắc Kạn'),
+(gen_random_uuid()::varchar, N'Bạc Liêu'),
+(gen_random_uuid()::varchar, N'Bắc Ninh'),
+(gen_random_uuid()::varchar, N'Bến Tre'),
+(gen_random_uuid()::varchar, N'Bình Định'),
+(gen_random_uuid()::varchar, N'Bình Dương'),
+(gen_random_uuid()::varchar, N'Bình Phước'),
+(gen_random_uuid()::varchar, N'Bình Thuận'),
+(gen_random_uuid()::varchar, N'Cà Mau'),
+(gen_random_uuid()::varchar, N'Cần Thơ'),
+(gen_random_uuid()::varchar, N'Cao Bằng'),
+(gen_random_uuid()::varchar, N'Đà Nẵng'),
+(gen_random_uuid()::varchar, N'Đắk Lắk'),
+(gen_random_uuid()::varchar, N'Đắk Nông'),
+(gen_random_uuid()::varchar, N'Điện Biên'),
+(gen_random_uuid()::varchar, N'Đồng Nai'),
+(gen_random_uuid()::varchar, N'Đồng Tháp'),
+(gen_random_uuid()::varchar, N'Gia Lai'),
+(gen_random_uuid()::varchar, N'Hà Giang'),
+(gen_random_uuid()::varchar, N'Hà Nam'),
+(gen_random_uuid()::varchar, N'Hà Nội'),
+(gen_random_uuid()::varchar, N'Hà Tĩnh'),
+(gen_random_uuid()::varchar, N'Hải Dương'),
+(gen_random_uuid()::varchar, N'Hải Phòng'),
+(gen_random_uuid()::varchar, N'Hậu Giang'),
+(gen_random_uuid()::varchar, N'Hòa Bình'),
+(gen_random_uuid()::varchar, N'Hưng Yên'),
+(gen_random_uuid()::varchar, N'Khánh Hòa'),
+(gen_random_uuid()::varchar, N'Kiên Giang'),
+(gen_random_uuid()::varchar, N'Kon Tum'),
+(gen_random_uuid()::varchar, N'Lai Châu'),
+(gen_random_uuid()::varchar, N'Lâm Đồng'),
+(gen_random_uuid()::varchar, N'Lạng Sơn'),
+(gen_random_uuid()::varchar, N'Lào Cai'),
+(gen_random_uuid()::varchar, N'Long An'),
+(gen_random_uuid()::varchar, N'Nam Định'),
+(gen_random_uuid()::varchar, N'Nghệ An'),
+(gen_random_uuid()::varchar, N'Ninh Bình'),
+(gen_random_uuid()::varchar, N'Ninh Thuận'),
+(gen_random_uuid()::varchar, N'Phú Thọ'),
+(gen_random_uuid()::varchar, N'Phú Yên'),
+(gen_random_uuid()::varchar, N'Quảng Bình'),
+(gen_random_uuid()::varchar, N'Quảng Nam'),
+(gen_random_uuid()::varchar, N'Quảng Ngãi'),
+(gen_random_uuid()::varchar, N'Quảng Ninh'),
+(gen_random_uuid()::varchar, N'Quảng Trị'),
+(gen_random_uuid()::varchar, N'Sóc Trăng'),
+(gen_random_uuid()::varchar, N'Sơn La'),
+(gen_random_uuid()::varchar, N'Tây Ninh'),
+(gen_random_uuid()::varchar, N'Thái Bình'),
+(gen_random_uuid()::varchar, N'Thái Nguyên'),
+(gen_random_uuid()::varchar, N'Thanh Hóa'),
+(gen_random_uuid()::varchar, N'Thừa Thiên Huế'),
+(gen_random_uuid()::varchar, N'Tiền Giang'),
+(gen_random_uuid()::varchar, N'Tp. Hồ Chí Minh'),
+(gen_random_uuid()::varchar, N'Trà Vinh'),
+(gen_random_uuid()::varchar, N'Tuyên Quang'),
+(gen_random_uuid()::varchar, N'Vĩnh Long'),
+(gen_random_uuid()::varchar, N'Vĩnh Phúc'),
+(gen_random_uuid()::varchar, N'Yên Bái');
