@@ -14,12 +14,12 @@ public class DataJson {
     @Column(name = "Id", length = 100, nullable = false)
     private String id;
 
-    @Lob
-    @Column(name = "OrgDocJson", columnDefinition = "LONGTEXT")
+
+    @Column(name = "OrgDocJson")
     private String orgDocJson;
 
-    @Lob
-    @Column(name = "OrgLatestDoc", columnDefinition = "LONGTEXT")
+
+    @Column(name = "OrgLatestDoc")
     private String orgLatestDoc;
 
     // Constructors

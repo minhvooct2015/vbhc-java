@@ -17,9 +17,29 @@ public class JsonComparator {
     public static List<JsonDifference> diff(String leftJson,
                                             String rightJson,
                                             Set<String> excludedFieldsOrPaths) throws Exception {
+        if (leftJson == null) {
+            leftJson = "";
+        }
+
+        if (rightJson == null) {
+            rightJson = "";
+        }
         JsonNode left = MAPPER.readTree(leftJson);
         JsonNode right = MAPPER.readTree(rightJson);
         List<JsonDifference> diffs = new ArrayList<>();
+
+        if (leftJson == null) {
+            JsonComparator.JsonDifference di = new JsonComparator.JsonDifference("FUll-json", left, right);
+            diffs.add(di);
+            return diffs;
+        }
+
+        if (rightJson == null) {
+            JsonComparator.JsonDifference di = new JsonComparator.JsonDifference("FUll-json", left, right);
+            diffs.add(di);
+            return diffs;
+        }
+
         compare(left, right, "", normalizeExcludes(excludedFieldsOrPaths), diffs);
         return diffs;
     }

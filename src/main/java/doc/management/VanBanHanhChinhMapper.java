@@ -5,10 +5,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
-@Slf4j
 public class VanBanHanhChinhMapper {
+
+    public static  final Logger log = LoggerFactory.getLogger(VanBanHanhChinhMapper.class);
     public static VanBanHanhChinh mapDtoToEntity(VanBanHanhChinhDTOOrg dto) {
         if (dto == null) return null;
 
@@ -47,6 +50,7 @@ public class VanBanHanhChinhMapper {
      */
     public static <T> T fromString(String json, Class<T> classType){
         try {
+            if (json == null) return null;
             log.info("input json = {}", json);
             return objectMapper.readValue(json, classType);
         } catch (JsonProcessingException e) {

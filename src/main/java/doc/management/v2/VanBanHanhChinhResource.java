@@ -12,15 +12,13 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.reactive.MultipartForm;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-
-import static doc.management.DocResource.IMAGE_DIRECTORY;
 
 @Path("doc/v2")
 @Produces(MediaType.APPLICATION_JSON)
@@ -171,7 +169,8 @@ public class VanBanHanhChinhResource {
         return Response.ok(update).build();
     }
 
-
+    @ConfigProperty(name = "app.image-directory")
+    String IMAGE_DIRECTORY;
     @GET
     @Path("file/{fileName}")
 //    @Produces({"image/jpeg", "image/png", "application/pdf"})

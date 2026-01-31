@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 @Path("/doc")
+@Deprecated
 public class DocResource {
 
     public static final String IMAGE_DIRECTORY = "src/main/resources/images";

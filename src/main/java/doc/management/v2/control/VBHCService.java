@@ -1,6 +1,8 @@
 package doc.management.v2.control;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import doc.management.*;
@@ -11,6 +13,7 @@ import doc.management.v2.mapper.EntityDtoMapper;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +25,6 @@ import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
-import static doc.management.DocResource.IMAGE_DIRECTORY;
 import static doc.management.DocService.FILE_NAME_CONCAT;
 
 
@@ -30,8 +32,11 @@ import static doc.management.DocService.FILE_NAME_CONCAT;
 public class VBHCService {
 
     private static final Logger logger = LoggerFactory.getLogger(DocService.class);
-    private static final String IMAGE_DIRECTORY = "src/main/resources/images";  // Change this to your desired directory
+//    private static final String IMAGE_DIRECTORY = "src/main/resources/images";  // Change this to your desired directory
 
+
+    @ConfigProperty(name = "app.image-directory")
+    String IMAGE_DIRECTORY;
     @Inject
     VanBanHanhChinhRepo vanBanHanhChinhRepo;
 
@@ -80,15 +85,24 @@ public class VBHCService {
     private void getOneJsonDiff(Map<String, List<JsonComparator.JsonDifference>> results, DataJson data) throws Exception {
         String orgDocJson = data.getOrgDocJson();
         String orgLatestDoc = data.getOrgLatestDoc();
+        String s = UUID.randomUUID().toString();
         Set<String> excludes = Set.of("tepDinhKem", "ghiChu", "donViPhoBien", "nguoiPhoBien");
+        String loaiVanBan = "loaiVanBan";
+        if (!orgDocJson.contains(loaiVanBan)) excludes.add(loaiVanBan);
         List<JsonComparator.JsonDifference> diff = JsonComparator.diff(orgDocJson, orgLatestDoc, excludes);
         if(diff == null || diff.isEmpty()) {
             return;
         }
+
         VanBanHanhChinhDTOV2 vbhc = VanBanHanhChinhMapper.
-                fromString(orgDocJson, VanBanHanhChinhDTOV2.class);
-        String name =  vbhc.getTepDinhKem() + data.getId().toString();
-        results.put(name, diff);
+                fromString(orgLatestDoc, VanBanHanhChinhDTOV2.class);
+        if (vbhc !=null) {
+            String name =  vbhc.getTepDinhKem() + data.getId().toString();
+            results.put(name, diff);
+        } else {
+            results.put(s, diff);
+        }
+
     }
 
     //test 2 case, 1 Truong hop la them moi nhung da ton tai,
@@ -103,6 +117,15 @@ public class VBHCService {
             dataJson.setId(UUID.randomUUID().toString());
             dataJson.setOrgDocJson(orgDoc);
             dataJson.setOrgLatestDoc(docInfo);
+// Serialize orgDocJson and orgLatestDoc to JSON strings
+//            try {
+//                String orgDocJsonString = objectMapper.writeValueAsString(orgDoc); // orgDocJsonObject is Java code defining the JSON
+//                String orgLatestDocString = objectMapper.writeValueAsString(docInfo);
+//                dataJson.setOrgDocJson(orgDocJsonString);
+//                dataJson.setOrgLatestDoc(orgLatestDocString);
+//            } catch (JsonProcessingException e) {
+//                throw new RuntimeException(e);
+//            }
 
             vanBanHanhChinhRepo.themDocJson(dataJson);
 
@@ -426,6 +449,9 @@ public class VBHCService {
 
             String mineType = getExtensionWithDot(fileName);
             Path directoryPath = Paths.get(IMAGE_DIRECTORY);
+
+            Files.createDirectories(directoryPath);
+
             String uniqueImageName = fileName + FILE_NAME_CONCAT + id + mineType;
             Path filePath = directoryPath.resolve(uniqueImageName);
 

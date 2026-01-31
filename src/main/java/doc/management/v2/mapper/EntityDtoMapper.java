@@ -106,17 +106,17 @@ public class EntityDtoMapper {
         );
     }
 
-    public static NguoiDung toNguoiDungEntity(NguoiDungDTO dto) {
-        if (dto == null) return null;
-        return new NguoiDung(
-                dto.getUserId(),
-                dto.getHoTen(),
-                dto.getEmail(),
-                dto.getSoDienThoai(),
-                dto.getTenDangNhap(),
-                dto.getMatKhau()
-        );
-    }
+//    public static NguoiDung toNguoiDungEntity(NguoiDungDTO dto) {
+//        if (dto == null) return null;
+//        return new NguoiDung(
+//                dto.getUserId(),
+//                dto.getHoTen(),
+//                dto.getEmail(),
+//                dto.getSoDienThoai(),
+//                dto.getTenDangNhap(),
+//                dto.getMatKhau()
+//        );
+//    }
 
     // ---- NguoiKyGiuChucVu ----
     public static NguoiKyGiuChucVuDTO toNguoiKyGiuChucVuDTO(NguoiKyGiuChucVu entity) {
