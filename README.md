@@ -102,7 +102,7 @@ matKhau VARCHAR(255)
 "hoTen": "Quan tri vien",
 "email": "Admin@docMana.com",
 "soDienThoai": "0123456789",
-"tenDangNhap": "admin",
+"tenDangNhap": "Admin",
 "password": "123456"
 }
 

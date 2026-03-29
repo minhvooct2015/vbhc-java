@@ -449,9 +449,9 @@ sudo apt install openjdk-21-jre -y
 # Set environment variables
 export DB_HOST=172.18.54.38
 export DB_PORT=5432
-export DB_NAME=postgres
+export DB_NAME=vbhcdb
 export DB_USER=vanban
-export APP_IMAGE_DIRECTORY=/home/vanban/imagesp
+export APP_IMAGE_DIRECTORY=/home/vanban/images
 export DB_PASSWORD=Ctu33333$
 
 # Ensure the images directory exists
@@ -508,10 +508,12 @@ verify my steps to deploy:
 2. Compress the target/quarkus-app/ directory on your local machine:
 
 mvn clean package -DskipTests -Dquarkus.package.type=uber-jar
+
 3. scp target/doc-management-service-1.0.0-SNAPSHOT-runner.jar vanban@172.18.54.38:/home/vanban
-   if the transfer is slow, you can compress the file first using .tar.gz, or switch to rsync (as previously explained). Example:
-   tar -czvf doc-management-service.tar.gz -C target doc-management-service-1.0.0-SNAPSHOT-runner.jar
-   scp doc-management-service.tar.gz vanban@172.18.54.38:/home/vanban
+
+[//]: # (   if the transfer is slow, you can compress the file first using .tar.gz, or switch to rsync &#40;as previously explained&#41;. Example:)
+[//]: # (   tar -czvf doc-management-service.tar.gz -C target doc-management-service-1.0.0-SNAPSHOT-runner.jar)
+[//]: # (   scp doc-management-service.tar.gz vanban@172.18.54.38:/home/vanban)
 
 4. SSH into the server.
    ssh vanban@172.18.54.38
@@ -545,3 +547,5 @@ Database connect:
 psql -h 172.18.54.38 -U vanban -d postgres -p 5432
 
 https://github.com/copilot/c/2e9d294d-3b5c-46fb-87a3-797159b0dcc0
+
+remove folder rm -r folder
