@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mysql.cj.util.StringUtils;
 import doc.management.*;
 import doc.management.v2.*;
+import doc.management.v2.DTO.FieldSuggestionDTO;
 import doc.management.v2.DTO.VanBanHanhChinhDTOV2;
 import doc.management.v2.VanBanHanhChinh;
 import doc.management.v2.mapper.EntityDtoMapper;
@@ -406,6 +407,41 @@ public class VBHCService {
     }
 
 
+
+    /**
+     * Returns a list of fields that differ between the original source document
+     * (OrgDocJson) and the version the user entered (OrgLatestDoc).
+     *
+     * Each entry is a suggestion: "the original value was X, the user changed it to Y —
+     * consider persisting this value to the database."
+     *
+     * If no DataJson is linked to this document (e.g. old data), returns empty suggestions.
+     */
+    public FieldSuggestionDTO.DocSuggestionDTO getSuggestionsForDoc(String vbhcId) throws Exception {
+        List<DataJson> dataJsonList = vanBanHanhChinhRepo.findDataJsonByVbhcId(vbhcId);
+
+        List<FieldSuggestionDTO> suggestions = new ArrayList<>();
+
+        for (DataJson data : dataJsonList) {
+            String orgJson    = data.getOrgDocJson();
+            String latestJson = data.getOrgLatestDoc();
+
+            if (orgJson == null || orgJson.isBlank() || latestJson == null || latestJson.isBlank()) {
+                continue;
+            }
+
+            // No fields excluded here — we want to show everything the user changed.
+            List<JsonComparator.JsonDifference> diffs = JsonComparator.diff(orgJson, latestJson, Set.of());
+
+            for (JsonComparator.JsonDifference diff : diffs) {
+                String orgText    = diff.orgValue()    != null ? diff.orgValue().asText()    : null;
+                String latestText = diff.latestValue() != null ? diff.latestValue().asText() : null;
+                suggestions.add(new FieldSuggestionDTO(diff.path(), orgText, latestText));
+            }
+        }
+
+        return new FieldSuggestionDTO.DocSuggestionDTO(vbhcId, suggestions);
+    }
 
     public VanBanHanhChinhDTOV2 getVBHCById(String id){
         VanBanHanhChinh vanBanHanhChinhById = vanBanHanhChinhRepo.findVanBanHanhChinhById(id);

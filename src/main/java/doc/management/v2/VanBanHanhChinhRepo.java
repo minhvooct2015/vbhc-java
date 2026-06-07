@@ -37,6 +37,13 @@ public class VanBanHanhChinhRepo {
         return em.createQuery("SELECT p FROM DataJson p", DataJson.class).setMaxResults(ps).setFirstResult(pn).getResultList();
     }
 
+    public List<DataJson> findDataJsonByVbhcId(String vbhcId) {
+        return em.createQuery(
+                "SELECT d FROM DataJson d WHERE d.vanBanHanhChinh.id = :vbhcId", DataJson.class)
+                .setParameter("vbhcId", vbhcId)
+                .getResultList();
+    }
+
     public CoQuanDonVi themCQ(String ten) {
         CoQuanDonVi ob = new CoQuanDonVi();
         TinhThanhPho matchingProvince = tinhThanhPhoService.findMatchingProvince(ten);

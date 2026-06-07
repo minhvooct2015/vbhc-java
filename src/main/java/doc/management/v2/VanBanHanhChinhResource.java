@@ -133,6 +133,29 @@ public class VanBanHanhChinhResource {
         return Response.ok(vbhcById).build();
     }
 
+    /**
+     * Returns the list of fields the user changed compared to the original
+     * source document (OrgDocJson vs OrgLatestDoc from DataJson).
+     *
+     * Each entry shows:
+     *   - field:            the JSON path that differs (e.g. "trichYeu", "nguoiKy")
+     *   - originalValue:    the value in the original imported document
+     *   - userUpdatedValue: the value the user entered — suggested to persist
+     *
+     * An empty suggestions list means the user has not changed anything from
+     * the source document, or no DataJson is linked to this document yet.
+     */
+    @GET
+    @Path("{id}/suggestions")
+    public Response getSuggestions(@jakarta.ws.rs.PathParam("id") String id) {
+        try {
+            return Response.ok(vbhcService.getSuggestionsForDoc(id)).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Error computing suggestions: " + e.getMessage()).build();
+        }
+    }
+
     @GET
     @Path("all")
     public Response getDocAll() {
