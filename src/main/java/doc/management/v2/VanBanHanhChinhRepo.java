@@ -87,6 +87,10 @@ public class VanBanHanhChinhRepo {
 
     @Transactional
     public void removeVanBanHanhChinh(String id) {
+        em.createQuery("DELETE FROM DataJson d WHERE d.vanBanHanhChinh.id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+
         em.createQuery("DELETE FROM DonViPhoBien d WHERE d.vanBanHanhChinh.id = :id")
                 .setParameter("id", id)
                 .executeUpdate();

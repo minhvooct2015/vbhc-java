@@ -105,29 +105,11 @@ public class VBHCService {
 
     }
 
-    //test 2 case, 1 Truong hop la them moi nhung da ton tai,
-//    1 cai la tao moi tu dau den cuoi
-        @Transactional
+    @Transactional
         public VanBanHanhChinh addDOc(MultipartBodyImageUpload multipartBodyImageUpload, boolean isUpdated) {
             // Image upload logic (if applicable)
             String docInfo = multipartBodyImageUpload.getDocInfo();
             String orgDoc = multipartBodyImageUpload.getOrgDoc();
-
-            DataJson dataJson = new DataJson();
-            dataJson.setId(UUID.randomUUID().toString());
-            dataJson.setOrgDocJson(orgDoc);
-            dataJson.setOrgLatestDoc(docInfo);
-// Serialize orgDocJson and orgLatestDoc to JSON strings
-//            try {
-//                String orgDocJsonString = objectMapper.writeValueAsString(orgDoc); // orgDocJsonObject is Java code defining the JSON
-//                String orgLatestDocString = objectMapper.writeValueAsString(docInfo);
-//                dataJson.setOrgDocJson(orgDocJsonString);
-//                dataJson.setOrgLatestDoc(orgLatestDocString);
-//            } catch (JsonProcessingException e) {
-//                throw new RuntimeException(e);
-//            }
-
-            vanBanHanhChinhRepo.themDocJson(dataJson);
 
             VanBanHanhChinhDTOV2 vbhc = VanBanHanhChinhMapper.
                     fromString(docInfo, VanBanHanhChinhDTOV2.class);
@@ -173,8 +155,15 @@ public class VBHCService {
                 vbhcE.setTepDinhKem(imagePath);
             }
 
-
             vanBanHanhChinhRepo.createVanBanHanhChinh(vbhcE);
+
+            // Create DataJson linked to the persisted VanBanHanhChinh
+            DataJson dataJson = new DataJson();
+            dataJson.setId(UUID.randomUUID().toString());
+            dataJson.setOrgDocJson(orgDoc);
+            dataJson.setOrgLatestDoc(docInfo);
+            dataJson.setVanBanHanhChinh(vbhcE);
+            vanBanHanhChinhRepo.themDocJson(dataJson);
 
             List<String> donViPhoBien = vbhc.getDonViPhoBien();
             if(donViPhoBien != null && !donViPhoBien.isEmpty()) {
